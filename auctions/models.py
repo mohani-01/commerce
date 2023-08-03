@@ -11,5 +11,5 @@ class Listing(models.Model):
 class Bid(models.Model):
     pass
 
-class Comments(model.Model):
+class Comments(models.Model):
     pass

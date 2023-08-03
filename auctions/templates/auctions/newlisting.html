@@ -1,0 +1,10 @@
+{% extends 'auctions/layout.html' %}
+
+
+
+{% block body %}
+<form action="{% url 'newlisting' user.id %}" method="post">
+    {{ form}}
+</form>
+
+{% endblock %}
