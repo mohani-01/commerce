@@ -4,7 +4,9 @@
 
 {% block body %}
 <form action="{% url 'newlisting' user.id %}" method="post">
+    {% csrf_token %}
     {{ form}}
+    <input type="submit">
 </form>
 
 {% endblock %}
