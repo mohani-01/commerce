@@ -3,12 +3,14 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .forms import *
-from .models import User
-
+from .forms import New
+from .models import User, Listing, Comments
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listing = Listing.objects.all()
+    return render(request, "auctions/index.html", {
+        "lists": listing,
+    })
 
 
 def login_view(request):
@@ -65,9 +67,38 @@ def register(request):
 
 def newlisting(request, user_id):
     if request.method == 'POST':
-        return HttpResponse("Working on it")
-    
+        form = New(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+
+            user = User.objects.get(pk=user_id)
+            print(user)
+            # listing = Listing(title=)
+            listing = Listing(user=user, title=title, description=description)
+            listing.save()
+            
+            return HttpResponseRedirect(reverse("index"))    
     else:
         return render(request, 'auctions/newlisting.html', {
-            "form": NewListing(),
+            "form": New(),
+        })
+
+def item(request, list_id):
+    if request.method == "POST":
+        message = request.POST["comment"]
+        user = User.objects.get(pk=int(request.POST["commenter"]))
+        lis = Listing.objects.get(pk=list_id)
+        common = Comments(user=user, message=message)
+        common.save()
+        common.listing.add(lis)
+        return HttpResponse("working on that")
+
+
+    else:
+        listing = Listing.objects.get(pk=list_id)
+        comment = listing.comment.all()
+        return render(request, 'auctions/list.html', {
+            "list": listing,
+            "comments": comment
         })

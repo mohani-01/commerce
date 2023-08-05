@@ -6,18 +6,13 @@ class User(AbstractUser):
     pass
 
 class Listing(models.Model):
-    """
-    id = automatic
-    title = 
-    description = 
-    starting bid = 
-    image_url
-    user = Object
-                < User: User.id, User.username, User.password >
-    comment = Object < Comment: Comment.id, Comment.message, Comment.commenter = Object
-                                                                                        < User: User.id, User.username, User.password >
-    """
-    pass
+   
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
+    title = models.CharField(max_length=64)
+    description = models.TextField()
+
+
 
 class Bid(models.Model):
     """
@@ -34,12 +29,6 @@ class Bid(models.Model):
     pass
 
 class Comments(models.Model):
-    """
-    id = automatic
-    message = 
-    user_id = Object 
-                    < User: User.id, User.username, User.password >  
-    Listing = Object 
-                    < Listing: ... >
-    """
-    pass
+    user = models.ForeignKey(User, default=3, on_delete=models.CASCADE, related_name='commenter')
+    message = models.TextField(default="HI")
+    listing = models.ManyToManyField(Listing, blank=True, related_name="comment")
