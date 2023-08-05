@@ -2,33 +2,42 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+from django.core.files import File
+import os
+
+
+
+
 class User(AbstractUser):
     pass
 
 class Listing(models.Model):
-   
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="lister")
     title = models.CharField(max_length=64)
     description = models.TextField()
+    time = models.DateTimeField(auto_now_add=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    category = models.CharField(max_length=255, null=True)
+    image = models.URLField(null=True, blank=True)
 
+
+    
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commenter')
+    message = models.TextField()
+    listing = models.ManyToManyField(Listing, blank=True, related_name="comment")
 
 
 class Bid(models.Model):
-    """
-    id = automatic
-    update_bid = $
-    auction = Object 
-                    < Listing: Listing.id, Listing.title, Listing.description, 
-                        Listing.starting_bid, Listing.image_url, Listing.user = Object
-                                                                                    < User: User.id, User.username, User.password >
-                        Listing.comment = Object 
-                                                < Comment: Comment.id, Comment.message, Comment.commenter = Object
-                                                                                                                < User: User.id, User.username, User.password >
-    """
-    pass
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bidder')
+    bid = models.DecimalField(max_digits=10, decimal_places=2)
+    listing =  models.ManyToManyField(Listing, blank=True, related_name="bid")
 
-class Comments(models.Model):
-    user = models.ForeignKey(User, default=3, on_delete=models.CASCADE, related_name='commenter')
-    message = models.TextField(default="HI")
-    listing = models.ManyToManyField(Listing, blank=True, related_name="comment")
+
+class WatchList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watcher')
+    listing =  models.ManyToManyField(Listing, blank=True, related_name="watchlist")
+
+

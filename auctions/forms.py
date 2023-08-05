@@ -1,8 +1,10 @@
 from django import forms
 
 
-class New(forms.Form):
-    title = forms.CharField(label="Title", max_length=256, widget=forms.TextInput(attrs={'placeholder': 'Name of Item'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Write your description about the object'}))
 
-    # bid = forms.IntegerField(label="Starting bid", widget=forms.NumberInput(attrs={'placeholder': 'Your starting bid'}))
+class NewList(forms.Form):
+    title = forms.CharField(max_length=64)
+    description = forms.CharField(widget=forms.Textarea())
+    price = forms.DecimalField(max_digits=10, decimal_places=2) 
+    category = forms.CharField(required=False, max_length=255)
+    image = forms.URLField(required=False)

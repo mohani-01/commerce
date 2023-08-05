@@ -1,15 +1,18 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .forms import New
-from .models import User, Listing, Comments
+
+from .models import User, Listing, Comment, WatchList
+from .forms import NewList
+
 
 def index(request):
-    listing = Listing.objects.all()
+    lists = Listing.objects.all()
     return render(request, "auctions/index.html", {
-        "lists": listing,
+        "lists": lists
     })
 
 
@@ -64,41 +67,30 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-
-def newlisting(request, user_id):
-    if request.method == 'POST':
-        form = New(request.POST)
+@login_required(login_url="/login")
+def newlist(request, user_id):
+    if request.method == "POST":
+        form = NewList(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
-
-            user = User.objects.get(pk=user_id)
-            print(user)
-            # listing = Listing(title=)
-            listing = Listing(user=user, title=title, description=description)
+            price = form.cleaned_data["price"]
+            category = form.cleaned_data["category"]
+            image = form.cleaned_data["image"]
+            # for i in range(2):
+            #     print(title,type(title), description, price, type(price), category, )
+            # get user 
+            user = User(pk=user_id)
+            listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
             listing.save()
-            
-            return HttpResponseRedirect(reverse("index"))    
+            return HttpResponseRedirect(reverse("index"))
+
+        else:
+            return render(request, 'auctions/newlist.html', {
+            "form": form
+            })
+        return HttpResponse("Working on it")
     else:
-        return render(request, 'auctions/newlisting.html', {
-            "form": New(),
-        })
-
-def item(request, list_id):
-    if request.method == "POST":
-        message = request.POST["comment"]
-        user = User.objects.get(pk=int(request.POST["commenter"]))
-        lis = Listing.objects.get(pk=list_id)
-        common = Comments(user=user, message=message)
-        common.save()
-        common.listing.add(lis)
-        return HttpResponse("working on that")
-
-
-    else:
-        listing = Listing.objects.get(pk=list_id)
-        comment = listing.comment.all()
-        return render(request, 'auctions/list.html', {
-            "list": listing,
-            "comments": comment
+        return render(request, 'auctions/newlist.html', {
+            "form": NewList()
         })
