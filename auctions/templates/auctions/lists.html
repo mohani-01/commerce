@@ -1,0 +1,17 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<a href="{% url 'index' %}" > Return </a>
+<div style="margin-top: 20px;">
+
+    {{ lists.title }}
+    <img src="{{ lists.image }}" alt="{{ lists.title }}">
+    {% for comment in comments %}
+        <div>
+
+            {{ comment.user  }}
+            {{ comment.message }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
