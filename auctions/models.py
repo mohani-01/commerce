@@ -27,6 +27,7 @@ class Listing(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commenter')
     message = models.TextField()
+    time = models.DateField(auto_now_add=True)
     listing = models.ManyToManyField(Listing, blank=True, related_name="comment")
 
 

@@ -68,6 +68,19 @@ def register(request):
         return render(request, "auctions/register.html")
 
 @login_required(login_url="/login")
+def lists(request, list_id):
+    lists = Listing.objects.get(pk=list_id)
+    comments = lists.comment.all()
+
+
+    return render(request, 'auctions/lists.html', {
+        "lists": lists,
+        "comments": comments
+    })
+
+
+
+@login_required(login_url="/login")
 def newlist(request, user_id):
     if request.method == "POST":
         form = NewList(request.POST)
