@@ -27,8 +27,9 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, related_name="group") 
     image = models.URLField(null=True, blank=True)
 
+
 def __str__(self):
-    return f"{self.title} {self.description} {self.price}"
+    return f"Listing with Title: {self.title}, Description: {self.description}, Price: {self.price}, and Time created: {self.time}"
 
 
 class Comment(models.Model):
@@ -37,6 +38,8 @@ class Comment(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     listing = models.ManyToManyField(Listing, blank=True, related_name="comment")
 
+    def __str__(self):
+        return f"User: {self.user}, Commented {self.message} This, at {self.time} on object called {self.listing.title}"
 
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bidder')
@@ -44,10 +47,12 @@ class Bid(models.Model):
     listing =  models.ManyToManyField(Listing, blank=True, related_name="bid")
 
     def __str__(self):
-        return f"{self.bid}"
+        return f"User: {user} bid with {self.bid} money on object {self.listing.title}"
 
 class WatchList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watcher')
     listing =  models.ManyToManyField(Listing, blank=True, related_name="watchlist")
 
+def __str__(self):
+    return f"User: {user}, added object {self.listing.title} as a Watchlist"
 

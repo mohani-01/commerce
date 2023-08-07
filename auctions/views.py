@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from .models import *
 from .forms import *
-from .helper import *
+from .helpers import *
 
 def index(request):
     lists = Listing.objects.filter(active=True)
@@ -69,18 +69,30 @@ def register(request):
 
 
 def category(request):
+    # Via POST
     if request.method == "POST":   
-        print(request.POST)
-        category = Category.objects.get(category="Tech")
-        print(f" Category {category}")
-        lists = category.group.all()
-        for lis in lists:
 
-            print(f"{lis.title }")
-        return HttpResponse(f"{lists } Working on it")
+        # Get category form user selection
+        get_category = request.POST["category"]
+
+
+        # Get cateogry object from db, this has to exist logical b/c of else: statement at the bottom [ categories are from the db ]
+        category = Category.objects.get(category=get_category)
+        
+        # Error the user did something
+        if not category:
+            ...
+        # get all lists where their active value is True
+        lists = category.group.filter(active=True).all()
+        
+        return render(request, "auctions/index.html", {
+            "lists": lists,
+        })
+              
+    # Via GET
     else:  
+        # Get each category from Category model
         categories = Category.objects.exclude(category="").all()
-
         return render(request, 'auctions/category.html', {
             "categories":categories,
         } )
@@ -93,21 +105,10 @@ def lists(request, list_id):
     # Error checking
     if not lists:
         ... 
+    # Get all the comment with the newest comment at top
     comments = lists.comment.all().order_by('-time')
-    # comments = Comment.objects.all().order_by('-time').values()
-    for comment in comments:
-        print(comments)
-    # Get the price or max bid and the number of bids for that object
-    # price, length= get_bid(lists)
 
-    # GET empty from
-    # newbid = NewBid()
-
-    # make the min value of price tag to max bid or price of the object
-    # newbid.fields['price'].widget.attrs['min'] = price
-
-
-    # This have to be modified
+    # This have to be modified (current price use helper function in helpers.py)
     return render(request, 'auctions/lists.html', {
         "lists": lists,
         "add_comment": NewComment(),
@@ -128,29 +129,39 @@ def newlist(request, user_id):
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
             price = form.cleaned_data["price"]
-            get_category = form.cleaned_data["category"].strip()
             image = form.cleaned_data["image"]
             
+            # Get category
+            get_category = request.POST["category"].strip().capitalize() 
+            print(get_category)
+            if not get_category:
+                raise ValueError("making sure that the field is correct") 
             # Get the user
             user = User(pk=user_id)
-            
+        
             # Return to newlisting page if the user doesn't exist
             # it is not possbile if db is malfunctioning or the user change 
             # the value of user.id in newlisting.html is changed
             if not user:
                 ...
                 
+            category = Category.objects.filter(category=get_category).first()
 
-            # Insert category into Category's database
-            # get_category =  get_category == "" 
+            # add that category and others into Listing db
+            if category:
                 
-            category = Category(category=get_category.strip())
-            category.save()
+                # Add all datas into listing database and save the data
+                listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
+                listing.save()
 
-            # Add all datas into listing database and save the data
-            listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
-            listing.save()
+            # create new category and add others into 
+            else:
+                category = Category(category=get_category)
+                category.save()
 
+                listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
+                listing.save()
+            
             # Redirect the user into active listing page
             return HttpResponseRedirect(reverse("index"))
 
@@ -164,19 +175,29 @@ def newlist(request, user_id):
     
     # Via GET
     else:
+        # Get all categories except empty one
+        categories = Category.objects.exclude(category="").all()
+
+        # return to user with input tag for title, description, price, category and image url
         return render(request, 'auctions/newlist.html', {
-            "form": NewList()
+            "form": NewList(),
+            "categories": categories,
         })
 
 
 @login_required(login_url="/login")
 def comment(request, list_id):
+    # Via POST
     if request.method == "POST":
-        print(request.POST)
+
+        # Get the form populated data in it
         form = NewComment(request.POST)
+
+        # check if form is valid
         if form.is_valid():
             # GET the user id from the form
             user_id = int(request.POST["commenter"])
+
             # get the user db
             user = User.objects.get(pk=user_id)
 
@@ -184,23 +205,23 @@ def comment(request, list_id):
             # Check if user exist
             if not user:
                 ...
-            
+            # get the listing object
             lists = Listing.objects.get(pk=list_id)
+
             # Check if list exist
             if not lists:
                 ...
             # Get the comment
             message = form.cleaned_data["comment"]
 
-            # insert data to db
+            # insert data to comment db
             comment = Comment(user=user, message=message)
             comment.save()
 
+            # add the list to comment db (ManyToMany relationship)
             comment.listing.add(lists)
 
-            print(comment)
-
-
+        # return the user to its current page 
         return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
 
 @login_required(login_url="/login")
@@ -223,19 +244,17 @@ def bid(request, list_id):
 
             # get the amount of bid
             lists = Listing.objects.get(pk=list_id)
-
             # Error: list is not found
             if not lists:
                 ...
         
-            
             # compare it with the highest bid using get_bid() function 
             new_bid = form.cleaned_data['price']
             max_bid, length = get_bid(lists)
 
             # Error bid must be greater than max_bid
             if max_bid > new_bid:
-                raise ValueError
+                raise ValueError("This needs to return eRroR page")
 
             # else add that to the bid 
             bid = Bid(user=user, bid=new_bid)

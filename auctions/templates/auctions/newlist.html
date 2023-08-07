@@ -6,6 +6,13 @@
 <form action="{% url 'newlist' user.id %}" method="post">
    {% csrf_token %}
     {{ form }}
+    <label for="lists_category">Category</label>
+    <input id="lists_category" type="text" list="add" name="category" />
+    <datalist id="add">
+        {% for category in categories %}
+        <option>{{ category }}</option>
+        {% endfor   %}
+    </datalist>
     <input type="submit">
 </form>
 {% endblock %}
