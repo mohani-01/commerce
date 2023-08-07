@@ -67,6 +67,24 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
+def category(request):
+    if request.method == "POST":   
+        print(request.POST)
+        category = Category.objects.get(category="Tech")
+        print(f" Category {category}")
+        lists = category.group.all()
+        for lis in lists:
+
+            print(f"{lis.title }")
+        return HttpResponse(f"{lists } Working on it")
+    else:  
+        categories = Category.objects.exclude(category="").all()
+
+        return render(request, 'auctions/category.html', {
+            "categories":categories,
+        } )
+
 @login_required(login_url="/login")
 def lists(request, list_id):
     # GET the required listing page
@@ -110,7 +128,7 @@ def newlist(request, user_id):
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
             price = form.cleaned_data["price"]
-            get_category = form.cleaned_data["category"]
+            get_category = form.cleaned_data["category"].strip()
             image = form.cleaned_data["image"]
             
             # Get the user
@@ -121,9 +139,12 @@ def newlist(request, user_id):
             # the value of user.id in newlisting.html is changed
             if not user:
                 ...
-            
+                
+
             # Insert category into Category's database
-            category = Category(category=get_category)
+            # get_category =  get_category == "" 
+                
+            category = Category(category=get_category.strip())
             category.save()
 
             # Add all datas into listing database and save the data

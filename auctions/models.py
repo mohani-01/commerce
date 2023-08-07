@@ -15,6 +15,8 @@ class User(AbstractUser):
 class Category(models.Model):
     category = models.CharField(max_length=64, default=None)
 
+    def __str__(self):
+        return f"{self.category}"
 class Listing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="lister")
     title = models.CharField(max_length=64)
