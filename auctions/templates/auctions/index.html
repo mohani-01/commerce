@@ -8,7 +8,7 @@
     {% for list in lists %}
     <a href="{% url 'lists' list.id %}">
         <div class="container" style="border: 2px solid green;">
-            <img src="{{ list.image }}" alt="{{ list.title}}" style="width:30% ; border: 2px solid yellowgreen;">
+            <img src="{{ list.image }}" alt="{{list.title }}" style="width:30% ; border: 2px solid yellowgreen;">
             <div style="float: right; border: 2px solid blue;">
                 {{ list.title }}
                 {{ list.description }}

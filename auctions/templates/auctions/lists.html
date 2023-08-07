@@ -3,15 +3,44 @@
 {% block body %}
 <a href="{% url 'index' %}" > Return </a>
 <div style="margin-top: 20px;">
+    <div>
 
-    {{ lists.title }}
-    <img src="{{ lists.image }}" alt="{{ lists.title }}">
-    {% for comment in comments %}
+        {{ lists.title }}
+        <img src="{{ lists.image }}" alt="{{ lists.title }}">
+        {{ lists.description }}
+    </div>
         <div>
+            {{ message_bid }}
+            Current price: {{ price }}
+            {% if user.id == lists.user.id %}
 
-            {{ comment.user  }}
-            {{ comment.message }}
+
+                <button>Close Bid</button>
+            {%  else %}
+            <form action="{% url 'bid' lists.id %}" method="post">
+                <input type="hidden" value="{{user.id}}" name="bider">
+                {% csrf_token %}
+                <button>{{user.id}} {{lists.user.id}}</button>
+
+                {{ bid }} 
+                <input type="submit" value="Bid">
+            </form>
+            {% endif %}
         </div>
-    {% endfor %}
+        <div> 
+            <form action="{% url 'comment' lists.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" value="{{user.id}}" name="commenter">   
+                Comments:
+                {{ add_comment.comment }}
+                <input type="submit" value="Comment">
+            </form>
+            {% for comment in comments %}
+                <div>
+                    {{ comment.user  }}
+                    {{ comment.message }}
+                </div>
+            {% endfor %}
+        </div>
 </div>
 {% endblock %}
