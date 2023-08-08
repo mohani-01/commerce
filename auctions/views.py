@@ -11,6 +11,7 @@ from .helpers import *
 
 def index(request):
     lists = Listing.objects.filter(active=True)
+    print(lists)
     return render(request, "auctions/index.html", {
         "lists": lists
     })
@@ -99,18 +100,26 @@ def category(request):
 
 @login_required(login_url="/login")
 def lists(request, list_id):
+
+    
     # GET the required listing page
     lists = Listing.objects.get(pk=list_id)
+   
+    user = request.user
+    watchlist = get_watchlist(lists, user)
+    
 
     # Error checking
     if not lists:
         ... 
+
     # Get all the comment with the newest comment at top
     comments = lists.comment.all().order_by('-time')
 
     # This have to be modified (current price use helper function in helpers.py)
     return render(request, 'auctions/lists.html', {
         "lists": lists,
+        "watchlist" : watchlist,
         "add_comment": NewComment(),
         "comments": comments,
         "bid": NewBid(),
@@ -119,7 +128,7 @@ def lists(request, list_id):
 
 
 @login_required(login_url="/login")
-def newlist(request, user_id):
+def newlist(request):
     # Via POST
     if request.method == "POST":
         form = NewList(request.POST)
@@ -133,18 +142,13 @@ def newlist(request, user_id):
             
             # Get category
             get_category = request.POST["category"].strip().capitalize() 
-            print(get_category)
-            if not get_category:
-                raise ValueError("making sure that the field is correct") 
+
+           
             # Get the user
-            user = User(pk=user_id)
+            user = request.user
         
-            # Return to newlisting page if the user doesn't exist
-            # it is not possbile if db is malfunctioning or the user change 
-            # the value of user.id in newlisting.html is changed
-            if not user:
-                ...
-                
+    
+            # Get Category if it exist
             category = Category.objects.filter(category=get_category).first()
 
             # add that category and others into Listing db
@@ -170,8 +174,6 @@ def newlist(request, user_id):
             return render(request, 'auctions/newlist.html', {
             "form": form
             })
-
-
     
     # Via GET
     else:
@@ -195,16 +197,11 @@ def comment(request, list_id):
 
         # check if form is valid
         if form.is_valid():
-            # GET the user id from the form
-            user_id = int(request.POST["commenter"])
 
-            # get the user db
-            user = User.objects.get(pk=user_id)
+        
+            # get the user from request 
+            user = request.user
 
-
-            # Check if user exist
-            if not user:
-                ...
             # get the listing object
             lists = Listing.objects.get(pk=list_id)
 
@@ -224,6 +221,8 @@ def comment(request, list_id):
         # return the user to its current page 
         return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
 
+    else:
+        return HttpResponse("Method Not allowed")
 @login_required(login_url="/login")
 def bid(request, list_id):
     if request.method == "POST":
@@ -234,27 +233,24 @@ def bid(request, list_id):
         # check for the validity
         if form.is_valid():
 
-            # get The user db
-            user_id = request.POST["bider"]
-            user = User.objects.get(pk=user_id)
-
-            # Error
-            if not user:
-                ...
+            # get The user from request
+            user = request.user
 
             # get the amount of bid
             lists = Listing.objects.get(pk=list_id)
+
             # Error: list is not found
             if not lists:
                 ...
         
             # compare it with the highest bid using get_bid() function 
             new_bid = form.cleaned_data['price']
+
             max_bid, length = get_bid(lists)
 
             # Error bid must be greater than max_bid
             if max_bid > new_bid:
-                raise ValueError("This needs to return eRroR page")
+                raise ValueError("This needs to return eRroR page   ")
 
             # else add that to the bid 
             bid = Bid(user=user, bid=new_bid)
@@ -263,3 +259,77 @@ def bid(request, list_id):
 
         # Redirect With correct message
         return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
+
+@login_required(login_url="/login")  
+def closebid(request, list_id):
+    # get the items id
+
+    # get it from the database 
+
+    # check if it exist check the user have the permission user.id == listing.user.id
+
+    # check the active field to False
+    
+    # Remove the list from watch list where listing = closed list
+   
+    # Add the winner from the db and add it to BidWinner so that he can acess it
+    ...
+@login_required(login_url="/login")
+def watchlist(request, list_id):
+    if request.method == "POST":
+        # get the user id
+        user = request.user
+
+        # Get the list 
+        lists = Listing.objects.get(pk=list_id, active=True)
+
+        # Check if the list exist
+        if not lists:
+            ...
+        watchlist = WatchList.objects.filter(user=user, listing=lists).first()
+
+
+
+        # check if the listing exist in Watchlist
+        if watchlist:
+            watchlist.listing.remove(lists)
+            listsss = watchlist.listing.all()
+            print(f"Watchlist.id {listsss} ")
+            # Remove it from Watchlist
+            remove = watchlist
+            print(remove)
+
+        # Add it to watchlist
+        else:
+            # Get the user by its id
+            new_watchlist = WatchList.objects.filter(user=user).first()
+            print(new_watchlist)
+            if new_watchlist:
+                new_watchlist.listing.add(lists)
+
+            else:
+                create_watchlist = WatchList(user=user)
+                create_watchlist.save()
+                create_watchlist.listing.add(lists)
+
+
+        # redirect the user to the page
+        return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
+
+    # Error
+    else:
+        return HttpResponse("This page can't be accessed")
+
+@login_required(login_url="/login")
+def see_watchlist(request):
+   
+        # user
+        user = request.user
+
+        watchlist = WatchList.objects.get(user=user)
+        listing = watchlist.listing.all()
+       
+    
+        return render(request, 'auctions/index.html', {
+            "lists": watchlist.listing.all(),
+        })

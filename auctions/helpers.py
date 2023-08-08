@@ -13,3 +13,9 @@ def get_category(get_category, Category):
     category = Category.objects.get(category=get_category)
     if category:
         return category
+    
+def get_watchlist(lists, user):
+    watchlist = lists.watchlist.filter(user=user)
+    if watchlist:
+        return True
+    return False

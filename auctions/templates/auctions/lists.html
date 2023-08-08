@@ -4,7 +4,20 @@
 <a href="{% url 'index' %}" > Return </a>
 <div style="margin-top: 20px;">
     <div>
+        <div>
+            {% if watchlist %}
+            <form action="{% url 'add&removewatchlist' lists.id %}" method="post">
+                {% csrf_token %}
+                <button>Remove from Watchlist</button>
+            </form>
+            {% else %}
+            <form action="{% url 'add&removewatchlist' lists.id %}" method="post">            
+                {% csrf_token %}
+                <button>Add to Watchlist</button>
+            </form>
 
+            {% endif %}
+        </div>
         {{ lists.title }}
         <img src="{{ lists.image }}" alt="{{ lists.title }}">
         {{ lists.description }}
@@ -13,15 +26,11 @@
             {{ message_bid }}
             Current price: {{ price }}
             {% if user.id == lists.user.id %}
-
-
-                <button>Close Bid</button>
+            <form action="{% url 'closebid' lists.id %}"></form>
+                <input type="submit" value="CloseBid">
             {%  else %}
             <form action="{% url 'bid' lists.id %}" method="post">
-                <input type="hidden" value="{{user.id}}" name="bider">
                 {% csrf_token %}
-                <button>{{user.id}} {{lists.user.id}}</button>
-
                 {{ bid }} 
                 <input type="submit" value="Bid">
             </form>
@@ -30,7 +39,6 @@
         <div> 
             <form action="{% url 'comment' lists.id %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" value="{{user.id}}" name="commenter">   
                 Comments:
                 {{ add_comment.comment }}
                 <input type="submit" value="Comment">

@@ -3,7 +3,7 @@
 
 
 {% block body %}
-<form action="{% url 'newlist' user.id %}" method="post">
+<form action="{% url 'newlist'  %}" method="post">
    {% csrf_token %}
     {{ form }}
     <label for="lists_category">Category</label>
