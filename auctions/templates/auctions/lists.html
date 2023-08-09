@@ -24,11 +24,16 @@
     </div>
         <div>
             {{ message_bid }}
-            Current price: {{ price }}
+            &nbsp;&nbsp;&nbsp;Items price : {{lists.price }} <br>
+            Current bid: ${{ price }} <br>
+
             {% if user.id == lists.user.id %}
-            <form action="{% url 'closebid' lists.id %}"></form>
-                <input type="submit" value="CloseBid">
+            <form action="{% url 'closebid' lists.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Close Auction">
+            </form>
             {%  else %}
+            {{ length }} bid(s) so far.
             <form action="{% url 'bid' lists.id %}" method="post">
                 {% csrf_token %}
                 {{ bid }} 

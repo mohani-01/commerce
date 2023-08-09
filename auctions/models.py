@@ -47,19 +47,17 @@ class Bid(models.Model):
     listing =  models.ManyToManyField(Listing, blank=True, related_name="bid")
 
     def __str__(self):
-        return f"User: {user} bid with {self.bid} money on object {self.listing.title}"
+        return f"User: {self.user} bid with {self.bid} money on object {self.listing}"
 
 class WatchList(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watcher")
     listing =  models.ManyToManyField(Listing, blank=True, related_name="watchlist")
 
 def __str__(self):
-    return f"User: {user}, added object {self.listing.title} as a Watchlist"
+    return f"User: {self.user}, added object {self.listing.title} as a Watchlist"
 
-"""
+
 class BidWinner(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="winner")
-    
-    listing = models.ManyToManyField(Listing, blank=True, related_name="winner")
-
-"""
+    winningbid = models.DecimalField(max_digits=10, decimal_places=2)
+    listing = models.OneToOneField(Listing, on_delete=models.CASCADE, blank=True, related_name="winner")

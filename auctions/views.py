@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -11,7 +11,6 @@ from .helpers import *
 
 def index(request):
     lists = Listing.objects.filter(active=True)
-    print(lists)
     return render(request, "auctions/index.html", {
         "lists": lists
     })
@@ -103,23 +102,30 @@ def lists(request, list_id):
 
     
     # GET the required listing page
-    lists = Listing.objects.get(pk=list_id)
-   
+    lists = Listing.objects.filter(pk=list_id, active=True).first()   
     user = request.user
-    watchlist = get_watchlist(lists, user)
     
-
     # Error checking
     if not lists:
         ... 
+    
+    watchlist = get_watchlist(lists, user)
+    
+
 
     # Get all the comment with the newest comment at top
     comments = lists.comment.all().order_by('-time')
+
+    #get the price and amount of bid on that object
+    price, length = get_bid(lists)
+
 
     # This have to be modified (current price use helper function in helpers.py)
     return render(request, 'auctions/lists.html', {
         "lists": lists,
         "watchlist" : watchlist,
+        "price": price,
+        "length": length,
         "add_comment": NewComment(),
         "comments": comments,
         "bid": NewBid(),
@@ -252,7 +258,7 @@ def bid(request, list_id):
             if max_bid > new_bid:
                 raise ValueError("This needs to return eRroR page   ")
 
-            # else add that to the bid 
+            # else add that to the bid  Good it makes it else access
             bid = Bid(user=user, bid=new_bid)
             bid.save()
             bid.listing.add(lists)
@@ -262,18 +268,38 @@ def bid(request, list_id):
 
 @login_required(login_url="/login")  
 def closebid(request, list_id):
-    # get the items id
+    if request.method == "POST":
+        # get the the user
+        user = request.user
 
-    # get it from the database 
+        # get the item form db
+        lists = Listing.objects.get(pk=list_id)
 
-    # check if it exist check the user have the permission user.id == listing.user.id
+        # get it from the database 
+        if not lists:
+            ...
 
-    # check the active field to False
+        # check if it exist check the user have the permission user.id == listing.user.id
+        if not user.id == lists.user.id:
+            return HttpResponse(f"{user.username} are trying to close objects you don't own!")
+        # Change the active field to False
+
+        lists.active = False
+        print("This objects is ", lists.active)
+        
+        # Remove the list from watch list where listing = closed list
+        lists, user, winningbid =  get_winner(lists)
     
-    # Remove the list from watch list where listing = closed list
-   
-    # Add the winner from the db and add it to BidWinner so that he can acess it
-    ...
+        # print(item.title, " ", user)
+        
+        # Add the winner from the db and add it to BidWinner so that he can acess it
+        winner = BidWinner(user=user, winningbid=winningbid)
+        # then add it to list
+        
+        return HttpResponse("Working on it")
+    else:
+        return HttpResponse("This method is not allowed")
+
 @login_required(login_url="/login")
 def watchlist(request, list_id):
     if request.method == "POST":
@@ -286,30 +312,32 @@ def watchlist(request, list_id):
         # Check if the list exist
         if not lists:
             ...
+
+        # get WatchList with user is person logged in and list be list_id
         watchlist = WatchList.objects.filter(user=user, listing=lists).first()
-
-
 
         # check if the listing exist in Watchlist
         if watchlist:
-            watchlist.listing.remove(lists)
-            listsss = watchlist.listing.all()
-            print(f"Watchlist.id {listsss} ")
-            # Remove it from Watchlist
-            remove = watchlist
-            print(remove)
 
-        # Add it to watchlist
+            # Remove it from Watchlist
+            watchlist.listing.remove(lists)
+
+        # Check if user have other listing in WatchList models
         else:
-            # Get the user by its id
+            # get The WatchList by its user
             new_watchlist = WatchList.objects.filter(user=user).first()
-            print(new_watchlist)
+
+            # add the new list to listing field if the user exist
             if new_watchlist:
                 new_watchlist.listing.add(lists)
 
+            # if the user doesn't exist in WatchList
             else:
+                # Create new WatchList for user
                 create_watchlist = WatchList(user=user)
                 create_watchlist.save()
+
+                # Add the list into listing page
                 create_watchlist.listing.add(lists)
 
 
@@ -318,7 +346,8 @@ def watchlist(request, list_id):
 
     # Error
     else:
-        return HttpResponse("This page can't be accessed")
+        return HttpResponseNotAllowed(permitted_methods="POST")
+    
 
 @login_required(login_url="/login")
 def see_watchlist(request):
@@ -329,7 +358,7 @@ def see_watchlist(request):
         watchlist = WatchList.objects.get(user=user)
         listing = watchlist.listing.all()
        
-    
+
         return render(request, 'auctions/index.html', {
             "lists": watchlist.listing.all(),
         })
