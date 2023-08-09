@@ -295,10 +295,20 @@ def closebid(request, list_id):
         # Add the winner from the db and add it to BidWinner so that he can acess it
         winner = BidWinner(user=user, winningbid=winningbid)
         # then add it to list
-        
+
         return HttpResponse("Working on it")
     else:
         return HttpResponse("This method is not allowed")
+
+@login_required(login_url="/login")
+def closedlistings(request):
+    # get the user db
+
+    # get all listing where the user wins
+    # BidWinner.objects.filter(user=user)  
+
+    # then return that data as template
+    ...
 
 @login_required(login_url="/login")
 def watchlist(request, list_id):
