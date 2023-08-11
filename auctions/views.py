@@ -10,10 +10,12 @@ from .forms import *
 from .helpers import *
 
 def index(request):
-    lists = Listing.objects.filter(active=True)
-    return render(request, "auctions/index.html", {
-        "lists": lists
-    })
+        lists = Listing.objects.filter(active=True)
+        
+        return render(request, "auctions/index.html", {
+            "lists": lists,
+        
+        })
 
 
 def login_view(request):
@@ -94,23 +96,22 @@ def category(request):
         # Get each category from Category model
         categories = Category.objects.exclude(category="").all()
         return render(request, 'auctions/category.html', {
-            "categories":categories,
+            "categories": categories,
         } )
 
 @login_required(login_url="/login")
 def lists(request, list_id):
-
-    
     # GET the required listing page
-    lists = Listing.objects.filter(pk=list_id, active=True).first()   
+    lists = Listing.objects.filter(pk=list_id, active=True).first() 
+
     user = request.user
     
     # Error checking
     if not lists:
-        ... 
-    
-    watchlist = get_watchlist(lists, user)
-    
+        raise ValueError("You are accessing auction which is down")
+
+    # Used to determine if the user can add it to watchlist or not 
+    watchlist = is_watchlist(lists, user)
 
 
     # Get all the comment with the newest comment at top
@@ -204,7 +205,6 @@ def comment(request, list_id):
         # check if form is valid
         if form.is_valid():
 
-        
             # get the user from request 
             user = request.user
 
@@ -282,21 +282,34 @@ def closebid(request, list_id):
         # check if it exist check the user have the permission user.id == listing.user.id
         if not user.id == lists.user.id:
             return HttpResponse(f"{user.username} are trying to close objects you don't own!")
+        
         # Change the active field to False
-
-        lists.active = False
+        lists.active = False    
         print("This objects is ", lists.active)
+
         
-        # Remove the list from watch list where listing = closed list
+        # Remove the list from watchlist where listing = closed list
+        # Removing this list from each individual watchlist might take time when the no of user become larger
+        # and larger so instead it will be removed next time every user want to 
+
+
+        # Figure out what this is used for 
         lists, user, winningbid =  get_winner(lists)
-    
-        # print(item.title, " ", user)
-        
+
         # Add the winner from the db and add it to BidWinner so that he can acess it
         winner = BidWinner(user=user, winningbid=winningbid)
-        # then add it to list
 
-        return HttpResponse("Working on it")
+   
+        # then add it to list
+        lists = Listing.objects.filter(active=True)
+        
+        return render(request, "auctions/index.html", {
+            "lists": lists,
+            "message": f"{user} won the auctions."
+        
+        })
+        # return HttpResponseRedirect()
+        # return HttpResponse("Working on it")
     else:
         return HttpResponse("This method is not allowed")
 
@@ -310,6 +323,33 @@ def closedlistings(request):
     # then return that data as template
     ...
 
+# See you watchlist
+@login_required(login_url="/login")
+def see_watchlist(request):
+        # user
+        user = request.user
+
+        watchlist = WatchList.objects.get(user=user)
+        
+
+        # get all deactivated lists from the user watchlist
+        deactivated_lists = watchlist.listing.filter(active=False)
+
+        # Then remove them if the exist 
+        # This is much more efficient than removing it from each users when an auction is closed
+        if deactivated_lists:
+            for i in range(len(non_listing)):
+                watchlist.listing.remove(non_listing[i])
+
+        # get all the lists which are active
+        listing = watchlist.listing.all()
+
+        return render(request, 'auctions/index.html', {
+            "lists": listing,
+        })
+
+
+# Add to watchlist
 @login_required(login_url="/login")
 def watchlist(request, list_id):
     if request.method == "POST":
@@ -358,17 +398,3 @@ def watchlist(request, list_id):
     else:
         return HttpResponseNotAllowed(permitted_methods="POST")
     
-
-@login_required(login_url="/login")
-def see_watchlist(request):
-   
-        # user
-        user = request.user
-
-        watchlist = WatchList.objects.get(user=user)
-        listing = watchlist.listing.all()
-       
-
-        return render(request, 'auctions/index.html', {
-            "lists": watchlist.listing.all(),
-        })

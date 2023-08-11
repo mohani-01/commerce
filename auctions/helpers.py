@@ -14,7 +14,7 @@ def get_bid(lists):
 #     if category:
 #         return category
     
-def get_watchlist(lists, user):
+def is_watchlist(lists, user):
     watchlist = lists.watchlist.filter(user=user)
     if watchlist:
         return True
@@ -25,5 +25,6 @@ def get_watchlist(lists, user):
 
 def get_winner(lists):
     data = lists.bid.order_by('-bid').first()
-    
-    return (data.listing.get(), data.user, data.bid)
+    if data:
+        return (data.listing.get(), data.user, data.bid)
+    return None, None, None
