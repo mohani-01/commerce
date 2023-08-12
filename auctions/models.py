@@ -24,7 +24,7 @@ class Listing(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     active = models.BooleanField(default=True)
     time = models.DateField(auto_now_add=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, related_name="group") 
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="group") 
     image = models.URLField(null=True, blank=True)
 
 

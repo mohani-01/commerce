@@ -1,0 +1,12 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+    {% for win in wins %}
+
+        {{ win.user }}
+        {{win.winningbid }}
+        {{ win.listing.title }}
+    {% endfor %}
+
+{% endblock %}

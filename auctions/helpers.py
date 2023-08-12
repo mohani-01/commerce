@@ -6,7 +6,7 @@ def get_bid(lists):
     length = len(lists.bid.all())
 
     if price:
-        return price, length
+        return (price, length)
     return (lists.price, length)
 
 # def get_category(get_category, Category):

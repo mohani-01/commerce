@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseNotAllowed, Http404
+from django.shortcuts import render,redirect
 from django.urls import reverse
 
 from .models import *
@@ -10,11 +11,10 @@ from .forms import *
 from .helpers import *
 
 def index(request):
+        # Get all listing which are active
         lists = Listing.objects.filter(active=True)
-        
         return render(request, "auctions/index.html", {
             "lists": lists,
-        
         })
 
 
@@ -70,35 +70,6 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
-def category(request):
-    # Via POST
-    if request.method == "POST":   
-
-        # Get category form user selection
-        get_category = request.POST["category"]
-
-
-        # Get cateogry object from db, this has to exist logical b/c of else: statement at the bottom [ categories are from the db ]
-        category = Category.objects.get(category=get_category)
-        
-        # Error the user did something
-        if not category:
-            ...
-        # get all lists where their active value is True
-        lists = category.group.filter(active=True).all()
-        
-        return render(request, "auctions/index.html", {
-            "lists": lists,
-        })
-              
-    # Via GET
-    else:  
-        # Get each category from Category model
-        categories = Category.objects.exclude(category="").all()
-        return render(request, 'auctions/category.html', {
-            "categories": categories,
-        } )
-
 @login_required(login_url="/login")
 def lists(request, list_id):
     # GET the required listing page
@@ -108,7 +79,10 @@ def lists(request, list_id):
     
     # Error checking
     if not lists:
-        raise ValueError("You are accessing auction which is down")
+        # messages.success(request, "Profile details updated.")
+        messages.error(request, "This Page You request is not Available. Try Another page!")
+        return HttpResponseRedirect(reverse("index"))
+        # raise ValueError("You are accessing auction which is down")
 
     # Used to determine if the user can add it to watchlist or not 
     watchlist = is_watchlist(lists, user)
@@ -118,8 +92,9 @@ def lists(request, list_id):
     comments = lists.comment.all().order_by('-time')
 
     #get the price and amount of bid on that object
+    # else get the price of the item 
     price, length = get_bid(lists)
-
+    
 
     # This have to be modified (current price use helper function in helpers.py)
     return render(request, 'auctions/lists.html', {
@@ -132,13 +107,57 @@ def lists(request, list_id):
         "bid": NewBid(),
     })
 
+# Done
+def category(request):
+    # Via POST
+    if request.method == "POST":   
+
+        # Get category form user selection
+        get_category = request.POST["category"]
+
+        # Get cateogry object from db, this has to exist logical b/c of else: statement at the bottom [ categories are from the db ]
+        category = Category.objects.filter(category=get_category).first()
+        
+        # Error if the user did with html something
+        if not category:
+            messages.warning(request, "There is no category by this name, Try again!")
+            return HttpResponseRedirect(reverse("category"))
+            
+        # get all lists where their active value is True
+        lists = category.group.filter(active=True).all()
+        
+        return render(request, "auctions/index.html", {
+            "lists": lists,
+        })
+              
+    # Via GET
+    else:  
+        # Get each category from Category model
+        categories = Category.objects.exclude(category="").all()
+        
+        # Check if the category doesn't consists atleast one listing then remove it
+        for category in categories:
+            if  not category.group.filter(active=True).all():
+                print(categories)
+                print(category)
+
+        
 
 
+        return render(request, 'auctions/category.html', {
+            "categories": categories,
+        } )
+
+
+# Done
 @login_required(login_url="/login")
 def newlist(request):
     # Via POST
     if request.method == "POST":
         form = NewList(request.POST)
+
+        # Get the user
+        user = request.user
 
         # Check if the form is valid
         if form.is_valid():
@@ -150,17 +169,11 @@ def newlist(request):
             # Get category
             get_category = request.POST["category"].strip().capitalize() 
 
-           
-            # Get the user
-            user = request.user
-        
-    
             # Get Category if it exist
             category = Category.objects.filter(category=get_category).first()
 
             # add that category and others into Listing db
             if category:
-                
                 # Add all datas into listing database and save the data
                 listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
                 listing.save()
@@ -174,12 +187,20 @@ def newlist(request):
                 listing.save()
             
             # Redirect the user into active listing page
+            messages.success(request, "Your Listing is added Successfully!")
             return HttpResponseRedirect(reverse("index"))
 
         # Return inserted form to the user
         else:
+            # Get all categories except empty one
+            categories = Category.objects.exclude(category="").all()
+
+            # return the form the user inserted  
+            messages.warning(request, "Your list is not submitted please insert the from correctly!")
+
             return render(request, 'auctions/newlist.html', {
-            "form": form
+            "form": form,
+            "categories": categories,
             })
     
     # Via GET
@@ -193,7 +214,7 @@ def newlist(request):
             "categories": categories,
         })
 
-
+# Done
 @login_required(login_url="/login")
 def comment(request, list_id):
     # Via POST
@@ -202,18 +223,21 @@ def comment(request, list_id):
         # Get the form populated data in it
         form = NewComment(request.POST)
 
+        # get the user from request 
+        user = request.user
+
+        # get the listing object
+        lists = Listing.objects.get(pk=list_id)
+
+        # Check if list exist
+        if not lists:
+            # all not lists should be Http404
+            messages.error(request, "This Page You request is not Available. Try Another page!")
+            return HttpResponseRedirect(reverse("index"))
+
         # check if form is valid
         if form.is_valid():
 
-            # get the user from request 
-            user = request.user
-
-            # get the listing object
-            lists = Listing.objects.get(pk=list_id)
-
-            # Check if list exist
-            if not lists:
-                ...
             # Get the comment
             message = form.cleaned_data["comment"]
 
@@ -224,31 +248,41 @@ def comment(request, list_id):
             # add the list to comment db (ManyToMany relationship)
             comment.listing.add(lists)
 
+        # invalid form
+        else:
+            messages.error(request, f"{user}, Your comment is not submitted. Try again")
+            return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
+        
         # return the user to its current page 
         return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
 
+    # Via not POST
     else:
-        return HttpResponse("Method Not allowed")
+        messages.error(request, "Method Not Allowed!")
+        return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
+
+# Done
 @login_required(login_url="/login")
 def bid(request, list_id):
     if request.method == "POST":
-        
+
         # Get the bid 
         form = NewBid(request.POST)
 
+        # get The user from request
+        user = request.user
+
+        # get the amount of bid
+        lists = Listing.objects.get(pk=list_id)
+
+        # Error: list is not found
+        if not lists:
+            messages.error(request, "Page Not Found!")
+            return HttpResponseRedirect(reverse("index"))
+            
         # check for the validity
         if form.is_valid():
 
-            # get The user from request
-            user = request.user
-
-            # get the amount of bid
-            lists = Listing.objects.get(pk=list_id)
-
-            # Error: list is not found
-            if not lists:
-                ...
-        
             # compare it with the highest bid using get_bid() function 
             new_bid = form.cleaned_data['price']
 
@@ -256,15 +290,28 @@ def bid(request, list_id):
 
             # Error bid must be greater than max_bid
             if max_bid > new_bid:
-                raise ValueError("This needs to return eRroR page   ")
+                messages.error(request, "Your bid must be greater than other bids!")
+                return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
 
-            # else add that to the bid  Good it makes it else access
+            # else add that to the bid  
             bid = Bid(user=user, bid=new_bid)
             bid.save()
             bid.listing.add(lists)
 
+        else:
+            messages.error(request, "Invalid input. Try again")
+            return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
+
+        messages.success(request, "Your Bid added successfully and your can check if you win on <a href=\"/closedlistings\">Closed listings</a>  when the auction is closed or you can bid again.")
         # Redirect With correct message
         return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
+    
+    # Via not POST
+    else:
+        messages.error(request, "Method Not Allowed!")
+        return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
+
+
 
 @login_required(login_url="/login")  
 def closebid(request, list_id):
@@ -277,50 +324,52 @@ def closebid(request, list_id):
 
         # get it from the database 
         if not lists:
-            ...
+            messages.error(request, "Page Not Found!")
+            return HttpResponseRedirect(reverse("index"))
 
-        # check if it exist check the user have the permission user.id == listing.user.id
-        if not user.id == lists.user.id:
-            return HttpResponse(f"{user.username} are trying to close objects you don't own!")
+        # Check if the user own the item
+        if  user.id != lists.user.id:
+            messages.warning(request, f"{user} you are trying to close an auction you don't own!")
+            return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
         
         # Change the active field to False
-        lists.active = False    
+        lists.active = False  
+        lists.save()
         print("This objects is ", lists.active)
-
-        
-        # Remove the list from watchlist where listing = closed list
-        # Removing this list from each individual watchlist might take time when the no of user become larger
-        # and larger so instead it will be removed next time every user want to 
 
 
         # Figure out what this is used for 
         lists, user, winningbid =  get_winner(lists)
 
         # Add the winner from the db and add it to BidWinner so that he can acess it
-        winner = BidWinner(user=user, winningbid=winningbid)
+        if not lists:
+                print("NO Bider")
+                messages.error(request, "Nobody bid on this auction. The Page is closed.")
+                return HttpResponseRedirect(reverse("index"))
 
-   
-        # then add it to list
-        lists = Listing.objects.filter(active=True)
-        
-        return render(request, "auctions/index.html", {
-            "lists": lists,
-            "message": f"{user} won the auctions."
-        
-        })
-        # return HttpResponseRedirect()
-        # return HttpResponse("Working on it")
+        winner = BidWinner(user=user, winningbid=winningbid, listing=lists)
+        winner.save()
+        # winner.listing.add(lists)
+
+        messages.success(request, f"User: {user} won this auction. The Page is closed successfully.")
+        return HttpResponseRedirect(reverse("index"))
+       
     else:
         return HttpResponse("This method is not allowed")
 
 @login_required(login_url="/login")
 def closedlistings(request):
     # get the user db
+    user = request.user
 
     # get all listing where the user wins
-    # BidWinner.objects.filter(user=user)  
-
+    wins = BidWinner.objects.filter(user=user)  
+    
+    print(wins)
     # then return that data as template
+    return render(request, 'auctions/wins.html', {
+        "wins": wins,
+    })
     ...
 
 # See you watchlist
@@ -338,8 +387,8 @@ def see_watchlist(request):
         # Then remove them if the exist 
         # This is much more efficient than removing it from each users when an auction is closed
         if deactivated_lists:
-            for i in range(len(non_listing)):
-                watchlist.listing.remove(non_listing[i])
+            for i in range(len(deactivated_lists)):
+                watchlist.listing.remove(deactivated_lists[i])
 
         # get all the lists which are active
         listing = watchlist.listing.all()
@@ -361,40 +410,51 @@ def watchlist(request, list_id):
 
         # Check if the list exist
         if not lists:
-            ...
+            messages.error(request, "Page not Found")
+            return HttpResponseRedirect(reverse("index"))
 
-        # get WatchList with user is person logged in and list be list_id
+        # this 'function' do both adding to watchlist and removing it
+
+        # The following 8+ lines remove the item form watchlist
+        # Check if the user add this page to their watchlist
         watchlist = WatchList.objects.filter(user=user, listing=lists).first()
 
-        # check if the listing exist in Watchlist
+        # Remove it if they already have it
         if watchlist:
 
             # Remove it from Watchlist
             watchlist.listing.remove(lists)
 
-        # Check if user have other listing in WatchList models
-        else:
-            # get The WatchList by its user
-            new_watchlist = WatchList.objects.filter(user=user).first()
+            # redirect the user to the page with message
+            messages.success(request, "This page is Removed from your Watchlist Successfully!")
+            return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
+
+
+        # The following 35+ lines add the item to watchlist
+
+        # Get watchlist db if the user have other watchlists
+        new_watchlist = WatchList.objects.filter(user=user).first()
+
+        # Check if user have other listing in WatchList model
+        if new_watchlist: 
 
             # add the new list to listing field if the user exist
-            if new_watchlist:
-                new_watchlist.listing.add(lists)
+            new_watchlist.listing.add(lists)
 
-            # if the user doesn't exist in WatchList
-            else:
-                # Create new WatchList for user
-                create_watchlist = WatchList(user=user)
-                create_watchlist.save()
+        # if the user doesn't exist in WatchList
+        else:
+            # Create new WatchList for user
+            create_watchlist = WatchList(user=user)
+            create_watchlist.save()
 
-                # Add the list into listing page
-                create_watchlist.listing.add(lists)
-
-
-        # redirect the user to the page
+            # Add the list into listing page
+            create_watchlist.listing.add(lists)
+        # redirect the user to the page with a message
+        messages.success(request, "This page is Add to Your Watchlist Successfully!")
         return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
 
     # Error
     else:
+        # return HttpResponseNotFound("<h1>404: Page not found</h1>")
         return HttpResponseNotAllowed(permitted_methods="POST")
     
