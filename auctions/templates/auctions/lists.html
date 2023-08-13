@@ -44,6 +44,7 @@
             <form action="{% url 'comment' lists.id %}" method="post">
                 {% csrf_token %}
                 Comments:
+               
                 {{ add_comment.comment }}
                 <input type="submit" value="Comment">
             </form>

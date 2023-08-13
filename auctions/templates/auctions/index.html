@@ -1,6 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
     <h2>Active Listings</h2>
   
     
@@ -25,7 +26,8 @@
         </div>
     </a>
 
-    
+    {% empty %}
+    No listing avaiable
 
     {% endfor %}
 {% endblock %}

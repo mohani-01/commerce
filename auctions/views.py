@@ -70,6 +70,52 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
+# Done
+def category(request):
+    # Via POST
+    if request.method == "POST":   
+
+        # Get category form user selection
+        get_category = request.POST["category"]
+
+        # Get cateogry object from db, this has to exist logical b/c of else: statement at the bottom [ categories are from the db ]
+        category = Category.objects.filter(category=get_category).first()
+        
+        # Error if the user did with html something
+        if not category:
+            messages.warning(request, "There is no category by this name, Try again!")
+            return HttpResponseRedirect(reverse("category"))
+            
+        # get all lists where their active value is True
+        lists = category.group.filter(active=True).all()
+        
+        return render(request, "auctions/index.html", {
+            "lists": lists,
+        })
+              
+    # Via GET
+    else:  
+        # Get each category from Category model
+        categories = Category.objects.exclude(category="").all()
+        print(categories)
+        # Check if the category doesn't consists atleast one listing then remove it
+        not_included = []
+        for category in categories:
+            if  not category.group.filter(active=True).all():
+
+                not_included.append(category)
+
+        new_categories = categories.exclude(category__in=not_included)
+
+        print(new_categories, "Filtered")
+        # categories = Category.objects.exclude(category="").all()
+        # print(categories)
+
+        return render(request, 'auctions/category.html', {
+            "categories": new_categories,
+        })
+
+
 @login_required(login_url="/login")
 def lists(request, list_id):
     # GET the required listing page
@@ -107,46 +153,6 @@ def lists(request, list_id):
         "bid": NewBid(),
     })
 
-# Done
-def category(request):
-    # Via POST
-    if request.method == "POST":   
-
-        # Get category form user selection
-        get_category = request.POST["category"]
-
-        # Get cateogry object from db, this has to exist logical b/c of else: statement at the bottom [ categories are from the db ]
-        category = Category.objects.filter(category=get_category).first()
-        
-        # Error if the user did with html something
-        if not category:
-            messages.warning(request, "There is no category by this name, Try again!")
-            return HttpResponseRedirect(reverse("category"))
-            
-        # get all lists where their active value is True
-        lists = category.group.filter(active=True).all()
-        
-        return render(request, "auctions/index.html", {
-            "lists": lists,
-        })
-              
-    # Via GET
-    else:  
-        # Get each category from Category model
-        categories = Category.objects.exclude(category="").all()
-        
-        # Check if the category doesn't consists atleast one listing then remove it
-        for category in categories:
-            if  not category.group.filter(active=True).all():
-                print(categories)
-                print(category)
-
-        
-
-
-        return render(request, 'auctions/category.html', {
-            "categories": categories,
-        } )
 
 
 # Done
@@ -348,7 +354,7 @@ def closebid(request, list_id):
                 return HttpResponseRedirect(reverse("index"))
 
         winner = BidWinner(user=user, winningbid=winningbid, listing=lists)
-        winner.save()
+        # winner.save()
         # winner.listing.add(lists)
 
         messages.success(request, f"User: {user} won this auction. The Page is closed successfully.")
@@ -379,7 +385,6 @@ def see_watchlist(request):
         user = request.user
 
         watchlist = WatchList.objects.get(user=user)
-        
 
         # get all deactivated lists from the user watchlist
         deactivated_lists = watchlist.listing.filter(active=False)
@@ -393,8 +398,8 @@ def see_watchlist(request):
         # get all the lists which are active
         listing = watchlist.listing.all()
 
-        return render(request, 'auctions/index.html', {
-            "lists": listing,
+        return render(request, 'auctions/watchlist.html', {
+            "watchlists": listing,
         })
 
 
