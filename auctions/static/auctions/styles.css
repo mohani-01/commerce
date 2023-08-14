@@ -1,0 +1,133 @@
+.hyper-link {
+   color: black;
+   text-decoration: none; 
+}
+
+.hyper-link:hover {
+    color: black;
+    text-decoration: none;
+}
+
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    
+    border: 4px solid rgb(214, 143, 55);
+    align-items: center;
+}
+
+.flex-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    max-width: 300px;
+
+    margin: 15px;
+    padding: 10px;
+    border: 3px solid silver;
+    background-color: rgb(245, 245, 245);
+    border-radius: 5px;
+
+}
+
+
+.image-item > img {
+    width: 94%;
+    margin: 0px 3%;
+    border-radius: 10px;
+}
+
+.description {
+    background-color: rgb(235, 235, 235) ;
+    text-align: justify;
+    font-family:  'Arial Narrow Bold', sans-serif;
+    margin-top: 5px;
+    padding: 3px 3px;
+    border: 1px solid silver;
+    border-radius: 5px;
+
+}
+
+/* lists.html */
+
+.list-container {
+    display: flex;
+    flex-wrap: wrap;
+
+
+    /* align-items: center; */
+    /* justify-items: flex-end; */
+    justify-content: center;
+}
+
+.list-items-one {
+    border: 2px solid saddlebrown;
+    max-height: 500px;
+
+}
+
+.list-items-one > img {
+    height: 100%;
+
+
+}
+
+
+
+.list-description {
+    height: 100%;
+
+    text-align: justify ;
+    /* text-align: center; */
+    /* justify-content: flex-start; */
+    /* justify-self: baseline; */
+    border: 2px solid sandybrown ;
+}
+
+
+.list-items {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column  ;
+    border: 2px double blue;
+    justify-content: flex-end;
+
+}
+
+
+
+.list-bottom {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    
+    border: 2px solid yellowgreen;
+} 
+.list-add-watchlist {
+
+    
+    align-self: end;
+    margin-right: 20px;
+
+    border: 3px solid yellow;
+}
+.list-add-bid {
+    justify-self: flex-end;
+
+}
+
+.bid-input {
+    width: 70%;
+}
+
+/* .add-and-remove-watchlist {
+    
+    align-items: end;
+    bottom: 3px;
+    left: 10px;
+} */

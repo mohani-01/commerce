@@ -9,10 +9,6 @@ def get_bid(lists):
         return (price, length)
     return (lists.price, length)
 
-# def get_category(get_category, Category):
-#     category = Category.objects.get(category=get_category)
-#     if category:
-#         return category
     
 def is_watchlist(lists, user):
     watchlist = lists.watchlist.filter(user=user)
@@ -22,7 +18,7 @@ def is_watchlist(lists, user):
 
 
 
-
+# Get the winner
 def get_winner(lists):
     data = lists.bid.order_by('-bid').first()
     if data:

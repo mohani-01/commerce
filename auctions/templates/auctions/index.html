@@ -3,31 +3,74 @@
 {% block body %}
 
     <h2>Active Listings</h2>
-  
     
-    
+    <div class="flex-container">
+        {% for list in lists %}
+        <a href="{% url 'lists' list.id %}" class="hyper-link">
 
+            <div class="flex-items">
 
-    {% for list in lists %}
-    <a href="{% url 'lists' list.id %}">
-        <div class="container" style="border: 2px solid green;">
-            <img src="{{ list.image }}" alt="{{list.title }}" style="width:30% ; border: 2px solid yellowgreen;">
-            <div style="float: right; border: 2px solid blue;">
-                {{ list.title }}
-                {{ list.description }}
-                {{ list.time }}
-               <h1>
+                <div class="title">
+                    <h3> {{ list.title }} </h3>
+                </div>
 
-            {{ list.category }}
-            </h1> 
-                
-    
+                <div class="image-item">
+                    {% if list.image %}
+                    <img src="{{ list.image }}" alt="{{ list.title }}">
+                    {% endif %}
+                </div>
+
+                <div class="list-descriptions">
+
+                    <div class="description">
+                        Description: {{ list.description}}
+                    </div>
+
+                    {% if list.category %}
+                    <div class="list-category">
+                        Category: {{ list.category }}
+                    </div>
+                    {% endif %}
+
+                    <div class="list-price">
+                        Price: ${{ list.price }}
+                    </div>
+
+                </div>
             </div>
+        </a>
+        {% endfor %}
+    </div>
+    
+    <div class="container" style="border: 3px solid goldenrod;">
+        <div class="row">
+        <!-- {% for list in lists %} -->
+        <div class="col" style="border: 2px dotted darkblue;">
+            
+            <a href="{% url 'lists' list.id %}">
+            <div class="flex-container">
+                <div class="img-design">
+                    <img src="{{ list.image }}" alt="{{list.title }}" >
+                </div>
+                <div class="list-descriptions">
+                        <h3> {{ list.title }} </h3>
+                            {{ list.description }}
+    
+                        </div>
+            </div>
+
+
+
+            </a>
         </div>
-    </a>
+        <!-- {% empty %} -->
+        <!-- No listing avaiable -->
+        <!-- {% endfor %} -->
+        </div>
+    </div>
 
-    {% empty %}
-    No listing avaiable
+   
+  
 
-    {% endfor %}
+
 {% endblock %}

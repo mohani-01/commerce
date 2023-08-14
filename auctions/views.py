@@ -13,6 +13,7 @@ from .helpers import *
 def index(request):
         # Get all listing which are active
         lists = Listing.objects.filter(active=True)
+        
         return render(request, "auctions/index.html", {
             "lists": lists,
         })
@@ -177,6 +178,7 @@ def newlist(request):
 
             # Get Category if it exist
             category = Category.objects.filter(category=get_category).first()
+
 
             # add that category and others into Listing db
             if category:

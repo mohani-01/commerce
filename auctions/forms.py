@@ -12,4 +12,4 @@ class NewBid(forms.Form):
     price = forms.DecimalField(label="Price" ,max_digits=10,  decimal_places=2, widget=forms.NumberInput(attrs={"placeholder":"Put your price here", "class":"form-control"})) 
 
 class NewComment(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea(attrs={"placeholder": "Leave a comment here.", "class":"form-control", "id": "floatingTextarea"}))
+    comment = forms.CharField(widget=forms.Textarea(attrs={"placeholder": "Leave a comment here.", "class":"form-control", "id": "floatingComment"}))
