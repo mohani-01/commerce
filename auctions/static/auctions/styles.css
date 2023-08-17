@@ -1,3 +1,10 @@
+
+
+body {
+    background: rgb(242, 242, 242);
+}
+
+
 .hyper-link {
    color: black;
    text-decoration: none; 
@@ -12,32 +19,183 @@
 .flex-container {
     display: flex;
     flex-wrap: wrap;
-
+    flex-direction: row;
+    /* flex-direction: row; */
+    /* border: 4px solid rgb(214, 143, 55); */
+    align-items: stretch;
     
-    border: 4px solid rgb(214, 143, 55);
-    align-items: center;
+    
 }
 
+.flex-items {
+    /* box-shadow: 20px 30px 40px rgba(231, 130, 130, 0.1); */
+    /* border-style: ridge; */
+    display: flex;
+    flex-wrap: nowrap;
+    /* border: 2px solid gray; */
+    height: 400px;
+    margin: 10px;
+    background-color: rgb(227, 227, 227);
+    border: 2px solid white;
+    border-radius: 10px;
+}
+.flex-items:hover {
+    border-color:  black;
+    background-color: rgb(232, 232, 232);
+    border-radius: 0px;
+    
+}
+.image-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    /* width: 450px; */
+    /* Try this one */
+    width: 350px;
+    /* max-width: 350px; */
+    
+    /* border: 2px double rgb(255, 217, 0); */
+    overflow: hidden;
+    
+}
+
+.image-item > img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 20%;
+    margin: auto auto;
+
+  /* transform: translate(-50%, -50%); */
+    border-radius: 25px;
+    /* background-color: wheat; */
+    /* border: 2px solid rgb(200, 200, 200); */
+}
+
+.image-item > img:hover {
+    padding: 4px;
+}
+
+.list-descriptions {
+    display: grid;
+    grid-template-rows: max-content auto max-content max-content;
+    /* grid-template-columns: ; */
+   
+    /* border: 4px double dodgerblue; */
+    width: 100%;
+    height: 100%;
+    /* justify-content: center;     */
+    width: 400px;
+    margin-top: 10px;
+}
+
+
+.title {
+    /* background-color: rgb(208, 255, 212); */
+    text-align: center;
+    border: 1px solid white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: 800;
+    height: min-content;   
+    padding-top: 5px;
+    margin: 10px 10px;
+    /* padding: 5px; */
+
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+
+
+.description {
+    /* background-color: rgb(149, 178, 169); */
+    text-align: justify;
+    margin: 0px 10px;
+    margin-bottom: 20px;
+    border: 1px solid white;
+    padding: 12px;
+    height: 100%;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    max-height: 250px;
+    overflow: scroll;
+    /* scroll-margin: 2px; */
+}
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; 
+}
+
+
+
+.category {
+    /* background-color: rgb(208, 255, 212); */
+    margin: 10px 0px 0px 10px;
+    /* margin-top: 20px; */
+    border: 1px solid white;
+    justify-self: flex-start;
+    padding: 5px;
+    width: 95%;
+    /* border-top-right-radius: 20px ;
+    border-bottom-right-radius: 20px; */
+}
+
+.title:hover, .description:hover, .category:hover, .price:hover {
+    background-color: rgb(225, 225, 225);
+    border-color: black;
+    
+}
+
+.price {
+    /* background-color: rgb(208, 255, 212); */
+    margin: 5px 0px 20px 10px;
+    /* margin-top: 5px; */
+    border: 1px solid white;
+    justify-self: flex-start;
+    /* margin-bottom: 15px; */
+    padding: 5px;
+    width: 95%;
+    /* border-top-right-radius: 20px ;
+    border-bottom-right-radius: 20px; */
+
+}
+
+
+/* 
 .flex-items {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    max-width: 300px;
+    justify-content: space-evenly;
+    
+    max-width: 350px;
+    height: 100%;
 
-    margin: 15px;
+    margin: 20px;
     padding: 10px;
-    border: 3px solid silver;
+    border: 3px solid rgb(27, 23, 23);
     background-color: rgb(245, 245, 245);
     border-radius: 5px;
 
 }
 
+.title {
+    align-self: flex-start;
+    justify-self: flex-start;
+}
 
 .image-item > img {
     width: 94%;
     margin: 0px 3%;
     border-radius: 10px;
+}
+.list-descriptions {
+    justify-self: flex-end;
+    border: 3px dotted yellow;
 }
 
 .description {
@@ -48,34 +206,53 @@
     padding: 3px 3px;
     border: 1px solid silver;
     border-radius: 5px;
-
 }
+.bottom {
+    justify-self: flex-end;
+    align-self: flex-end;
+    border: 3px double dodgerblue;
+} */
+
 
 /* lists.html */
+/* ---------------------------------------------- */
 
 .list-container {
     display: flex;
-    flex-wrap: wrap;
-
-
-    /* align-items: center; */
-    /* justify-items: flex-end; */
-    justify-content: center;
+    flex-wrap: nowrap;
+    min-width: max-content;
 }
-
-.list-items-one {
-    border: 2px solid saddlebrown;
+.list-items {
+    border: 2px solid black;
+    /* max-height: 600px; */
+    display: inline-block;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+}
+.list-items > img {
+    margin: 20px;
+    max-width: 500px;
     max-height: 500px;
-
+    height: auto;
+    width: auto;
+    object-fit: contain;
 }
 
-.list-items-one > img {
-    height: 100%;
-
-
+.list-items-two {
+    display: flex;
+    flex-direction: column;
+    min-width: 400px;
+    max-width: 600px;
+    object-fit: contain;
+    border: 3px solid green;
 }
 
-
+.list-title {
+    margin: 5px;
+    font-weight: 700;
+    text-align: justify;
+}
 
 .list-description {
     height: 100%;
@@ -84,45 +261,211 @@
     /* text-align: center; */
     /* justify-content: flex-start; */
     /* justify-self: baseline; */
-    border: 2px solid sandybrown ;
+    /* border: 2px solid sandybrown ;  */
+    margin: 10px;
+    /* border: 2px dashed indianred;  */
+}
+.list-bottom {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-end;   
+    /* border: 2px solid yellowgreen; */
+    margin-bottom: 30px;
+} 
+.list-add-watchlist { 
+    align-self: end;
+    margin-right: 5px;
+
+
+    /* border: 3px solid yellow;   */
+}
+
+.list-price {
+    position: relative;
+    width: 100%;
+   
+    border: 2px solid darkblue;  
+}
+.list-add-bid {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-self: flex-end;
+
+}
+.list-add-bid > button {
+    margin-left: 10px;
+    width: 120px;
+}
+
+
+.comments {
+    min-width: 800px;
+    max-width: 1000px;
+}
+
+.comment {
+    display: flex;
+    margin: 20px 10px;
+    
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    border: 2px solid blue;
+    margin: 5px;
+    
+}
+
+.icon > svg {
+    width: 30px;
+    height: 30px;
+    align-self: center;
+    margin: 3px;
+    color: rgb(22, 15, 164);
+    background-color: rgb(255, 255, 255);
+}
+.user {
+    padding: 5px 0px 0px 10px;
+}
+.user > div {
+    margin-top: 5px;
+    border: 2px solid snow;
+}
+
+/* 
+.list-container {
+    display: flex;
+    flex-wrap: nowrap;
+
+
+    /* align-items: center; */
+    /* justify-items: flex-end; 
+    justify-content: flex-start;
+    
+    /* width: fit-content; */
+    /* margin-top: calc(100% - 95%); 
+
+}
+.list-items-one {
+    width: 400px;
+    max-height: 600px;
+    overflow: hidden;
+
+
+}
+.list-items-one > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 
 .list-items {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column  ;
-    border: 2px double blue;
-    justify-content: flex-end;
-
+    /* border: 2px solid rgb(72, 28, 1); */
+    /* margin: 20px 0; 
+    min-height: 300px;
+    max-height: 500px;
+    width: fit-content;  
+    min-width: 200px;
+    max-width: 700px;   
+    
 }
 
 
+
+#list-image {
+    display: flex;
+    justify-content: center;
+    /* border: 2px solid orange; 
+    justify-self: center;
+    /* align-items: center; */
+    /* width: max-content; 
+}
+
+.list-items > img {
+    /* height: 100%; 
+    justify-self: center;
+    align-self: center;
+    /* width: auto;
+    max-width: 100%; */
+    /* max-height: 100%; 
+    height: 100%;
+    /* border: 2px solid rgb(69, 26, 26); 
+
+}
+
+.list-title {
+    margin: 5px;
+    font-weight: 700;
+    text-align: justify;
+}
+
+.list-description {
+    height: 100%;
+
+    text-align: justify ;
+    /* text-align: center; */
+    /* justify-content: flex-start; */
+    /* justify-self: baseline; */
+    /* border: 2px solid sandybrown ; 
+    margin: 10px;
+    /* border: 2px dashed indianred; 
+}
+
+
+.list-items-one {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    /* border: 2px double blue; 
+    justify-content: flex-end;
+    margin: 0px 5px;
+    padding: 10px;
+}
 
 .list-bottom {
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
-    justify-content: flex-end;
-
-    
-    border: 2px solid yellowgreen;
+    justify-content: flex-end;   
+    /* border: 2px solid yellowgreen; 
 } 
-.list-add-watchlist {
 
-    
+
+.list-add-watchlist { 
     align-self: end;
-    margin-right: 20px;
+    margin-right: 5px;
 
-    border: 3px solid yellow;
+
+    /* border: 3px solid yellow;  
+}
+.list-price {
+    position: relative;
+    width: 100%;
+    
+    /* border: 2px solid darkblue;  
 }
 .list-add-bid {
+    display: flex;
+    flex-wrap: nowrap;
     justify-self: flex-end;
 
 }
 
+
+.list-add-bid > button {
+    width: 120px;
+
+
+}
+
+
 .bid-input {
-    width: 70%;
+    width: 100%;
+    margin-right: 10px;
+
 }
 
 /* .add-and-remove-watchlist {

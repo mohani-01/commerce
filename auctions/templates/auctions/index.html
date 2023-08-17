@@ -5,71 +5,43 @@
     <h2>Active Listings</h2>
     
     <div class="flex-container">
+
         {% for list in lists %}
         <a href="{% url 'lists' list.id %}" class="hyper-link">
 
             <div class="flex-items">
-
-                <div class="title">
-                    <h3> {{ list.title }} </h3>
-                </div>
-
+                
+                {% if list.image %}
                 <div class="image-item">
-                    {% if list.image %}
-                    <img src="{{ list.image }}" alt="{{ list.title }}">
-                    {% endif %}
+                    <img class="border border-dark" src="{{ list.image }}" alt="{{ list.title }}">
                 </div>
+                {% endif %}
 
-                <div class="list-descriptions">
+                <div class="list-descriptions ">
 
-                    <div class="description">
-                        Description: {{ list.description}}
+                    <div class="title border border-success">
+                        <h4> {{ list.title }} </h4>
                     </div>
 
+                    <div class="description border border-success">
+                        <strong>Description:</strong>  {{ list.description}}
+                    </div>
+                    
                     {% if list.category %}
-                    <div class="list-category">
-                        Category: {{ list.category }}
+                    <div class="category border border-success">
+                    Category: {{ list.category }}
                     </div>
                     {% endif %}
-
-                    <div class="list-price">
+                    <div class="price border border-success">
                         Price: ${{ list.price }}
                     </div>
-
                 </div>
+
             </div>
         </a>
         {% endfor %}
     </div>
     
-    <div class="container" style="border: 3px solid goldenrod;">
-        <div class="row">
-        <!-- {% for list in lists %} -->
-        <div class="col" style="border: 2px dotted darkblue;">
-            
-            <a href="{% url 'lists' list.id %}">
-            <div class="flex-container">
-                <div class="img-design">
-                    <img src="{{ list.image }}" alt="{{list.title }}" >
-                </div>
-                <div class="list-descriptions">
-                        <h3> {{ list.title }} </h3>
-                            {{ list.description }}
-    
-                        </div>
-            </div>
-
-
-
-            </a>
-        </div>
-        <!-- {% empty %} -->
-        <!-- No listing avaiable -->
-        <!-- {% endfor %} -->
-        </div>
-    </div>
-
-   
   
 
 
