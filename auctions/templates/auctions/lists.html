@@ -3,7 +3,6 @@
 {% block body %}
 
 
-
 <div class="list-container border border-secondary">
     {% if lists.image %}
     <div class="list-items border" id="list-image">
@@ -40,10 +39,21 @@
                 {{ length }} bid(s) so far.
             </div>
 
-            <div class="list-add-bid">
-                {{ bid }}
+             {% if user.id == lists.user.id %}
+            <form class="list-add-bid" action="{% url 'closebid' lists.id %}" method="post">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="submit" value="Close Auction">
+            </form>
+            {%  else %}
+
+            <form class="list-add-bid"  action="{% url 'bid' lists.id %}" method="post">
+                {% csrf_token %}
+                {{ bid }} 
+
                 <button class="btn btn-primary" type="submit">Place Bid</button>
-            </div>
+            </form>
+            {% endif %}
+          
 
 
         </div>
@@ -54,34 +64,20 @@
 
 </div>
 
-<div>
-    <div class="comment">
-            <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                  </svg>
-                  <i class="bi bi-person-circle"></i>
-            </div>
-             
-            <div class="user">
-                {{ user  }}
-                <div>
-                    <form action="{% url 'comment' lists.id %}" method="post">
-                            {% csrf_token %}
-                            <input type="text">
-                            <input type="submit" value="Comment">
-                    </form>
-                </div>
-            </div>
-        </div>
+
+   
+
 <div class="comments">
-    comments
+    Comments
     <form action="{% url 'comment' lists.id %}" method="post">
         <div class="add-comment">
             {% csrf_token %}
-            {{ add_comment.comment }}
-            <input type="submit" value="Comment">
+
+            <div class="form-floating mb-3">
+                {{ add_comment }}
+                <label for="floatingComment">Comment</label>
+                <input class="submit-comment" type="submit" value="Comment">
+              </div>
         </div>
     </form>
     {% for comment in comments %}

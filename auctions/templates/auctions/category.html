@@ -2,16 +2,19 @@
 
 {% block body %}
 
+<div class="category-container">
 {% for category in categories %}
-<div>
-    <form action="{% url 'category' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" value="{{ category }}" name="category">
-        <input type="submit" value="{{ category }}">
-    </form>
+
+        <form class="category-item" action="{% url 'category' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ category }}" name="category">
+            <input type="submit" value="{{ category }}">
+        </form>
+
+
+    {% empty %}
+    No Category 
+    {% endfor %}
 </div>
-{% empty %}
-No Category 
-{% endfor %}
 
 {% endblock %}

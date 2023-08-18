@@ -356,7 +356,7 @@ def closebid(request, list_id):
                 return HttpResponseRedirect(reverse("index"))
 
         winner = BidWinner(user=user, winningbid=winningbid, listing=lists)
-        # winner.save()
+        winner.save()
         # winner.listing.add(lists)
 
         messages.success(request, f"User: {user} won this auction. The Page is closed successfully.")
@@ -400,8 +400,9 @@ def see_watchlist(request):
         # get all the lists which are active
         listing = watchlist.listing.all()
 
-        return render(request, 'auctions/watchlist.html', {
-            "watchlists": listing,
+        return render(request, 'auctions/index.html', {
+            "lists": listing,
+            "watchlist":True, 
         })
 
 

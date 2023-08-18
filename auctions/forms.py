@@ -14,4 +14,4 @@ class NewBid(forms.Form):
     price = forms.DecimalField(label="", max_digits=10,  decimal_places=2, widget=forms.NumberInput(attrs={"placeholder":"Bid", "class":"bid-input form-control"})) 
 
 class NewComment(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea(attrs={"placeholder": "Leave a comment here.", "class":"form-control", "id": "floatingComment"}))
+    comment = forms.CharField(label="", widget=forms.TextInput(attrs={ "class":"form-control", "id": "floatingComment", "placeholder":"Done"}))
