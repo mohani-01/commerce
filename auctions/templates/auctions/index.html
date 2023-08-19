@@ -1,8 +1,11 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
+    {% if watchlist %}
+    <h2>Watchlist</h2>
+    {% else %}
     <h2>Active Listings</h2>
+    {% endif %}
     
     <div class="flex-container">
 
@@ -19,20 +22,20 @@
 
                 <div class="list-descriptions ">
 
-                    <div class="title border border-success">
+                    <div class="title border border-info">
                         <h4> {{ list.title }} </h4>
                     </div>
 
-                    <div class="description border border-success">
+                    <div class="description border border-info">
                         <strong>Description:</strong>  {{ list.description}}
                     </div>
                     
                     {% if list.category %}
-                    <div class="category border border-success">
+                    <div class="category border border-info">
                     Category: {{ list.category }}
                     </div>
                     {% endif %}
-                    <div class="price border border-success">
+                    <div class="price border border-info">
                         Price: ${{ list.price }}
                     </div>
                 </div>

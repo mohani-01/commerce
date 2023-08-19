@@ -1,12 +1,51 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-
+    {% if wins %}
+    <h4>You won the following auction(s)</h4>
+    {% endif %}
+    <div class="flex-container">
     {% for win in wins %}
 
+
+
+            <div class="flex-items">
+                
+                {% if win.listing.image %}
+                <div class="image-item">
+                    <img class="border border-dark" src="{{ win.listing.image }}" alt="{{ win.listing.title }}">
+                </div>
+                {% endif %}
+
+                <div class="list-descriptions ">
+
+                    <div class="title border border-info">
+                        <h4> {{ win.listing.title }} </h4>
+                    </div>
+
+                    <div class="description border border-info">
+                        <strong>Description:</strong>  {{ win.listing.description}}
+                    </div>
+                    
+                    {% if win.listing.category %}
+                    <div class="category border border-info">
+                    Category: {{ win.listing.category }}
+                    </div>
+                    {% endif %}
+                    <div class="price border border-info">
+                        Your Bid: ${{ win.winningbid }}
+                    </div>
+                </div>
+
+            </div>
+
+
+    </div>
         {{ win.user }}
         {{win.winningbid }}
         {{ win.listing.title }}
+    {% empty %}
+    <h3 class="message">You haven't win any auction yet.</h3>
     {% endfor %}
 
 {% endblock %}

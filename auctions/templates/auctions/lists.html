@@ -2,108 +2,104 @@
 
 {% block body %}
 
+<div class="total-container">
 
-<div class="list-container border border-secondary">
-    {% if lists.image %}
-    <div class="list-items border" id="list-image">
-        <img src="{{ lists.image }}" alt="{{ lists.title }}">
-    </div>
-    {% else %}
 
-    {% endif %}
-    <div class="list-items-two">
-
-        <div class="list-title ">
-            {{ lists.title }}
+    <div class="list-container">
+        {% if lists.image %}
+        <div class="list-items " id="list-image">
+            <img src="{{ lists.image }}" alt="{{ lists.title }}">
         </div>
-        <div class="list-description">
-            {{ lists.description }}
-        </div>
+        {% else %}
 
-        <div class="list-bottom">
+        {% endif %}
+        <div class="list-items-two">
 
-            
-            <div class="list-add-watchlist">
-                <form action="{% url 'add&removewatchlist' lists.id %}" method="post">
+            <div class="list-title ">
+                {{ lists.title }}
+            </div>
+            <div class="list-description">
+                <h6>Description: </h6></h4>{{ lists.description }}
+            </div>
+
+            <div class="list-bottom">
+
+                
+                <div class="list-add-watchlist">
+                    <form action="{% url 'add&removewatchlist' lists.id %}" method="post">
+                        {% csrf_token %}
+                        {% if watchlist %}
+                            <input type="submit" class="add-and-remove-watchlist btn btn-outline-danger" value="Remove from Watchlist">
+                        {% else %}
+                            <input  type="submit" class="add-and-remove-watchlist btn btn-outline-success" value="Add to Watchlist">
+                        {% endif %}
+                    </form>
+                </div>
+                
+                <div class="list-price">
+                    Current bid: ${{ price }}<br>
+                    {{ length }} bid(s) so far.
+                </div>
+
+                {% if user.id == lists.user.id %}
+                <form class="list-add-bid" action="{% url 'closebid' lists.id %}" method="post">
                     {% csrf_token %}
-                    {% if watchlist %}
-                        <button class="add-and-remove-watchlist btn btn-outline-danger">Remove from Watchlist</button>
-                    {% else %}
-                        <button class="add-and-remove-watchlist btn btn-outline-success">Add to Watchlist</button> 
-                    {% endif %}
+                    <input class="btn btn-primary" id="bid" type="submit" value="Close Auction">
                 </form>
+                {%  else %}
+
+                <form class="list-add-bid" action="{% url 'bid' lists.id %}" method="post">
+                    {% csrf_token %}
+                    {{ bid }} 
+                    <input class="btn btn-primary"  type="submit" value="Place Bid">
+                </form>
+                {% endif %}
             </div>
-            
-            <div class="list-price">
-                Current bid: ${{ price }}<br>
-                {{ length }} bid(s) so far.
-            </div>
-
-             {% if user.id == lists.user.id %}
-            <form class="list-add-bid" action="{% url 'closebid' lists.id %}" method="post">
-                {% csrf_token %}
-                <input class="btn btn-primary" type="submit" value="Close Auction">
-            </form>
-            {%  else %}
-
-            <form class="list-add-bid"  action="{% url 'bid' lists.id %}" method="post">
-                {% csrf_token %}
-                {{ bid }} 
-
-                <button class="btn btn-primary" type="submit">Place Bid</button>
-            </form>
-            {% endif %}
-          
-
-
         </div>
+    </div>   
 
+    <div class="comments">
+        <span class="comment-top">Comments</span>
+        <hr style="height: 2px; background-color: black; border: none;">
+        <form action="{% url 'comment' lists.id %}" method="post">
+            <div class="add-comment">
 
-    </div>
+                {% csrf_token %}
+                
+                <div class="form-floating mb-3">
+                    {{ add_comment }}
+                    <label for="floatingComment">Add a comment</label>
+                    <input class="submit-comment btn btn-primary" type="submit" value="Comment">
 
-
-</div>
-
-
-   
-
-<div class="comments">
-    Comments
-    <form action="{% url 'comment' lists.id %}" method="post">
-        <div class="add-comment">
-            {% csrf_token %}
-
-            <div class="form-floating mb-3">
-                {{ add_comment }}
-                <label for="floatingComment">Comment</label>
-                <input class="submit-comment" type="submit" value="Comment">
-              </div>
-        </div>
-    </form>
-    {% for comment in comments %}
-    <div class="comment">
-
-            <div class="icon">
-
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                  </svg>
-                  <i class="bi bi-person-circle"></i>
-            </div>
-             
-            <div class="user">
-                {{ comment.user  }}
-                <div>
-
-                    {{ comment.message }}
                 </div>
             </div>
+        </form>
+        {% for comment in comments %}
+        <div class="comment">
 
+                <div class="icon">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                    </svg>
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                
+                <div class="user">
+                    @{{ comment.user  }}
+                    <div>
+
+                        {{ comment.message }}
+                    </div>
+                </div>
+
+        </div>
+        {% empty %}
+        No comment  
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
-
 
 
 {% endblock %}

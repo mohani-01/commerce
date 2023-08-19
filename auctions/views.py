@@ -141,6 +141,7 @@ def lists(request, list_id):
     #get the price and amount of bid on that object
     # else get the price of the item 
     price, length = get_bid(lists)
+    print(price)
     
 
     # This have to be modified (current price use helper function in helpers.py)
