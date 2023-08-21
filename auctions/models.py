@@ -13,7 +13,7 @@ class User(AbstractUser):
 
 
 class Category(models.Model):
-    category = models.CharField(max_length=64, default=None)
+    category = models.CharField(max_length=64, blank=True, default="")
 
     def __str__(self):
         return f"{self.category}"
@@ -29,7 +29,7 @@ class Listing(models.Model):
 
 
 def __str__(self):
-    return f"Listing with Title: {self.title}, Description: {self.description}, Price: {self.price}, and Time created: {self.time}"
+    return f"{self.title}"
 
 
 class Comment(models.Model):
@@ -39,7 +39,7 @@ class Comment(models.Model):
     listing = models.ManyToManyField(Listing, blank=True, related_name="comment")
 
     def __str__(self):
-        return f"User: {self.user}, Commented {self.message} This, at {self.time} on object called {self.listing.title}"
+        return f"User: {self.user}, Commented {self.message} This, at {self.time} on object called {self.listing}"
 
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bidder')
@@ -54,7 +54,7 @@ class WatchList(models.Model):
     listing =  models.ManyToManyField(Listing, blank=True, related_name="watchlist")
 
 def __str__(self):
-    return f"User: {self.user}, added object {self.listing.title} as a Watchlist"
+    return f"User: {self.user}, added object {self.listing} as a Watchlist"
 
 
 class BidWinner(models.Model):

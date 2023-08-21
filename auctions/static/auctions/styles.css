@@ -1,12 +1,7 @@
-
-
 body {
     background: rgb(242, 242, 242);
 }
-.message {
-    position: relative;
-    top: 50%;
-}
+
 
 .hyper-link {
    color: black;
@@ -23,21 +18,18 @@ body {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    /* flex-direction: row; */
-    /* border: 4px solid rgb(214, 143, 55); */
     align-items: stretch;
     
     
 }
 
 .flex-items {
-    /* box-shadow: 20px 30px 40px rgba(231, 130, 130, 0.1); */
-    /* border-style: ridge; */
+
     display: flex;
     flex-wrap: nowrap;
-    /* border: 2px solid gray; */
     height: 400px;
     margin: 10px;
+    /* width: fit-  content; */
     background-color: rgb(227, 227, 227);
     border: 2px solid white;
     border-radius: 10px;
@@ -53,12 +45,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    /* width: 450px; */
-    /* Try this one */
     width: 350px;
-    /* max-width: 350px; */
-    
-    /* border: 2px double rgb(255, 217, 0); */
     overflow: hidden;
     
 }
@@ -71,11 +58,7 @@ body {
     object-fit: contain;
     border-radius: 20%;
     margin: auto auto;
-
-  /* transform: translate(-50%, -50%); */
     border-radius: 25px;
-    /* background-color: wheat; */
-    /* border: 2px solid rgb(200, 200, 200); */
 }
 
 .image-item > img:hover {
@@ -86,19 +69,17 @@ body {
 .list-descriptions {
     display: grid;
     grid-template-rows: max-content auto max-content max-content;
-    /* grid-template-columns: ; */
-   
-    /* border: 4px double dodgerblue; */
+
     width: 100%;
     height: 100%;
-    /* justify-content: center;     */
+
     width: 400px;
     margin-top: 10px;
 }
 
 
 .title {
-    /* background-color: rgb(208, 255, 212); */
+
     text-align: center;
     border: 1px solid white;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -106,7 +87,6 @@ body {
     height: min-content;   
     padding-top: 5px;
     margin: 10px 10px;
-    /* padding: 5px; */
 
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -115,7 +95,7 @@ body {
 
 
 .description {
-    /* background-color: rgb(149, 178, 169); */
+
     text-align: justify;
     margin: 0px 10px;
     margin-bottom: 20px;
@@ -126,7 +106,7 @@ body {
     border-bottom-right-radius: 20px;
     max-height: 250px;
     overflow: scroll;
-    /* scroll-margin: 2px; */
+
 }
 
 ::-webkit-scrollbar {
@@ -137,87 +117,34 @@ body {
 
 
 .category {
-    /* background-color: rgb(208, 255, 212); */
     margin: 10px 0px 0px 10px;
-    /* margin-top: 20px; */
-    border: 1px solid white;
     justify-self: flex-start;
     padding: 5px;
     width: 95%;
-    /* border-top-right-radius: 20px ;
-    border-bottom-right-radius: 20px; */
+
 }
 
 .title:hover, .description:hover, .category:hover, .price:hover {
-    background-color: rgb(7, 7, 7);
+    background-color: rgb(147, 147, 147);
     border-color: black;
-    color: white;
+    color: rgb(0, 0, 0);
     
 }
 
 .price {
-    /* background-color: rgb(208, 255, 212); */
     margin: 5px 0px 20px 10px;
-    /* margin-top: 5px; */
     border: 1px solid white;
     justify-self: flex-start;
-    /* margin-bottom: 15px; */
+
     padding: 5px;
     width: 95%;
-    /* border-top-right-radius: 20px ;
-    border-bottom-right-radius: 20px; */
+
+
 
 }
 
 
-/* 
-.flex-items {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 
-    justify-content: space-evenly;
-    
-    max-width: 350px;
-    height: 100%;
-
-    margin: 20px;
-    padding: 10px;
-    border: 3px solid rgb(27, 23, 23);
-    background-color: rgb(245, 245, 245);
-    border-radius: 5px;
-
-}
-
-.title {
-    align-self: flex-start;
-    justify-self: flex-start;
-}
-
-.image-item > img {
-    width: 94%;
-    margin: 0px 3%;
-    border-radius: 10px;
-}
-.list-descriptions {
-    justify-self: flex-end;
-    border: 3px dotted yellow;
-}
-
-.description {
-    background-color: rgb(235, 235, 235) ;
-    text-align: justify;
-    font-family:  'Arial Narrow Bold', sans-serif;
-    margin-top: 5px;
-    padding: 3px 3px;
-    border: 1px solid silver;
-    border-radius: 5px;
-}
-.bottom {
-    justify-self: flex-end;
-    align-self: flex-end;
-    border: 3px double dodgerblue;
-} */
 
 
 /* lists.html */
@@ -227,33 +154,37 @@ body {
     width: 90%;
     min-width: fit-content;
     max-width: 1200px;
-    /* border: 2px solid blue; */
+
     margin: auto;
 }
 
 .list-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     width: fit-content;
-    max-width: 100%;
-    border: 2px double blueviolet;
-    /* margin: auto; */
+
+
+
 }
 .list-items {
-    /* border: 10px solid rgb(255, 0, 0); */
-    /* background-color: rgb(149, 116, 103); */
-    min-width: 500px;
-    max-height: 600px; 
+    
+    border: 3px solid green;
+    
+    min-width: 450px;
+    max-height: 650px; 
     display: inline-block;
-    border-right: 2px double indianred;
+    
     width: auto;
     height: auto;
     overflow: hidden; 
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .list-items > img {
-    margin: 20px;
-    
-    max-width: 500px;
+    margin: 20px ;
+    max-width: 450px;
     max-height: 500px;
     height: auto;
     width: auto;
@@ -265,11 +196,11 @@ body {
     display: flex;
     flex-direction: column;
     min-width: 400px;
-    max-width: 650px;
-    margin: 10px;
+    max-width: 550px;
+    padding: 10px;
 
     object-fit: contain;
-    /* border: 3px solid green; */
+    border: 3px solid green;
 }
 
 .list-title {
@@ -282,12 +213,8 @@ body {
     height: 100%;
 
     text-align: justify ;
-    /* text-align: center; */
-    /* justify-content: flex-start; */
-    /* justify-self: baseline; */
-    /* border: 2px solid sandybrown ;  */
     margin: 10px;
-    /* border: 2px dashed indianred;  */
+
     overflow: scroll;
 }
 .list-bottom {
@@ -295,23 +222,19 @@ body {
     flex-wrap: nowrap;
     flex-direction: column;
     justify-content: flex-end;   
-    /* border: 2px solid yellowgreen; */
+
     margin-bottom: 30px;
 } 
 .list-add-watchlist { 
     align-self: end;
     margin: 0 5px 5px 0;
-
-
-    /* border: 3px solid yellow;   */
 }
 
 .list-price {
     position: relative;
     width: 100%;
-   
-    /* border: 2px solid darkblue;   */
 }
+
 .list-add-bid {
     display: flex;
     flex-wrap: nowrap;
@@ -319,16 +242,12 @@ body {
 
 }
 .list-add-bid > input[id="bid"] {
-    /* margin-left: 10px; */
-    /* margin-right: 5px; */
-    /* width: 120px; */
     position: relative;
     top: 10px;
     left: calc(100% - 130px);
 }
 
 .bid-input {
-    /* width: 100%; */
     margin-right: 10px;
 
 }
@@ -340,7 +259,7 @@ body {
 }
 .comment-top {
     margin: 10px 0;
-    /* border-bottom: 2px ; */
+
 }
 .comment {
     display: flex;
@@ -351,7 +270,7 @@ body {
 .icon {
     width: 40px;
     height: 40px;
-    /* border: 2px solid blue; */
+
     margin: 5px;
     
 }
@@ -362,22 +281,20 @@ body {
     align-self: center;
     margin: 3px;
     color: rgb(22, 15, 164);
-    /* background-color: rgb(255, 255, 255); */
+
 }
 .user {
     padding: 5px 0px 0px 10px;
 }
 .user > div {
     margin-top: 5px;
-    /* border: 2px solid snow; */
+
 }
 
 .submit-comment {
     position: relative;
     margin: 10px;
     left: calc(100% - 110px);
-    /* width: 100%; */
-    /* border: 2px solid black; */
 }
 
 
@@ -385,16 +302,15 @@ body {
 
 
 /* category.html */
-
+/* -------------------------------------------------------- */
 .category-container {
     display: flex;
+    flex-wrap: wrap;
 
 }
 
 .category-item {
     width: 300px;
-    /* height: 50px; */
-    /* border: 2px solid blue; */
     text-align: center;
     margin: 20px;
     /* padding: 20px; */
@@ -403,7 +319,6 @@ body {
 
 .category-item > input[type="submit"] {
     width: 260px;
-    /* height: inherit; */
     padding: 20px;
     border:2px double black;
 }
@@ -411,145 +326,3 @@ body {
 .category-item > input[type="submit"]:hover {
     background-color: aliceblue;
 }
-
-
-/* 
-.list-container {
-    display: flex;
-    flex-wrap: nowrap;
-
-
-    /* align-items: center; */
-    /* justify-items: flex-end; 
-    justify-content: flex-start;
-    
-    /* width: fit-content; */
-    /* margin-top: calc(100% - 95%); 
-
-}
-.list-items-one {
-    width: 400px;
-    max-height: 600px;
-    overflow: hidden;
-
-
-}
-.list-items-one > img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-
-.list-items {
-    /* border: 2px solid rgb(72, 28, 1); */
-    /* margin: 20px 0; 
-    min-height: 300px;
-    max-height: 500px;
-    width: fit-content;  
-    min-width: 200px;
-    max-width: 700px;   
-    
-}
-
-
-
-#list-image {
-    display: flex;
-    justify-content: center;
-    /* border: 2px solid orange; 
-    justify-self: center;
-    /* align-items: center; */
-    /* width: max-content; 
-}
-
-.list-items > img {
-    /* height: 100%; 
-    justify-self: center;
-    align-self: center;
-    /* width: auto;
-    max-width: 100%; */
-    /* max-height: 100%; 
-    height: 100%;
-    /* border: 2px solid rgb(69, 26, 26); 
-
-}
-
-.list-title {
-    margin: 5px;
-    font-weight: 700;
-    text-align: justify;
-}
-
-.list-description {
-    height: 100%;
-
-    text-align: justify ;
-    /* text-align: center; */
-    /* justify-content: flex-start; */
-    /* justify-self: baseline; */
-    /* border: 2px solid sandybrown ; 
-    margin: 10px;
-    /* border: 2px dashed indianred; 
-}
-
-
-.list-items-one {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    /* border: 2px double blue; 
-    justify-content: flex-end;
-    margin: 0px 5px;
-    padding: 10px;
-}
-
-.list-bottom {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    justify-content: flex-end;   
-    /* border: 2px solid yellowgreen; 
-} 
-
-
-.list-add-watchlist { 
-    align-self: end;
-    margin-right: 5px;
-
-
-    /* border: 3px solid yellow;  
-}
-.list-price {
-    position: relative;
-    width: 100%;
-    
-    /* border: 2px solid darkblue;  
-}
-.list-add-bid {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-self: flex-end;
-
-}
-
-
-.list-add-bid > button {
-    width: 120px;
-
-
-}
-
-
-.bid-input {
-    width: 100%;
-    margin-right: 10px;
-
-}
-
-/* .add-and-remove-watchlist {
-    
-    align-items: end;
-    bottom: 3px;
-    left: 10px;
-} */

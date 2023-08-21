@@ -1,7 +1,7 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-
+<h3>Categories</h3>
 <div class="category-container">
 {% for category in categories %}
 
@@ -14,7 +14,7 @@
 
     {% empty %}
     <h4 class="message">No Catagories.</h4>
-    No Category 
+
     {% endfor %}
 </div>
 

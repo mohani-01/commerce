@@ -3,11 +3,14 @@ from django.db.models import Max
 
 def get_bid(lists):
     price = lists.bid.aggregate(Max('bid'))['bid__max']
+    bider = lists.bid.filter(bid=price, listing=lists).first()
     length = len(lists.bid.all())
 
     if price:
-        return (price, length)
-    return (lists.price, length)
+        price = float(f"{price:10.2f}") 
+
+        return (price, bider.user, length)
+    return (lists.price, lists.user, length)
 
     
 def is_watchlist(lists, user):

@@ -7,8 +7,8 @@
 
     <div class="list-container">
         {% if lists.image %}
-        <div class="list-items " id="list-image">
-            <img src="{{ lists.image }}" alt="{{ lists.title }}">
+        <div class="list-items" id="list-image">
+            <img class="list-image" src="{{ lists.image }}" alt="{{ lists.title }}">
         </div>
         {% else %}
 
@@ -19,7 +19,7 @@
                 {{ lists.title }}
             </div>
             <div class="list-description">
-                <h6>Description: </h6></h4>{{ lists.description }}
+                <h6>Description: </h6>{{ lists.description }}
             </div>
 
             <div class="list-bottom">
@@ -38,7 +38,10 @@
                 
                 <div class="list-price">
                     Current bid: ${{ price }}<br>
-                    {{ length }} bid(s) so far.
+                    {{ length }} bid(s) so far. 
+                    {% if user == bidder and user.id != lists.user.id %}
+                    <span>Your bid is the current bid.</span>
+                    {% endif %} 
                 </div>
 
                 {% if user.id == lists.user.id %}

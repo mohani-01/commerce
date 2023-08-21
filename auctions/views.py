@@ -98,7 +98,7 @@ def category(request):
     else:  
         # Get each category from Category model
         categories = Category.objects.exclude(category="").all()
-        print(categories)
+
         # Check if the category doesn't consists atleast one listing then remove it
         not_included = []
         for category in categories:
@@ -140,8 +140,8 @@ def lists(request, list_id):
 
     #get the price and amount of bid on that object
     # else get the price of the item 
-    price, length = get_bid(lists)
-    print(price)
+    price, bidder, length = get_bid(lists)
+    print("is this correct", price)
     
 
     # This have to be modified (current price use helper function in helpers.py)
@@ -149,6 +149,7 @@ def lists(request, list_id):
         "lists": lists,
         "watchlist" : watchlist,
         "price": price,
+        "bidder": bidder,
         "length": length,
         "add_comment": NewComment(),
         "comments": comments,
@@ -177,26 +178,33 @@ def newlist(request):
             # Get category
             get_category = request.POST["category"].strip().capitalize() 
 
+            # check if category is given or not
+            if not get_category:
+                listing = Listing(user=user, title=title, description=description, price=price, image=image)
+                listing.save()
+                print("Executing it")
+
             # Get Category if it exist
-            category = Category.objects.filter(category=get_category).first()
-
-
-            # add that category and others into Listing db
-            if category:
-                # Add all datas into listing database and save the data
-                listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
-                listing.save()
-
-            # create new category and add others into 
             else:
-                category = Category(category=get_category)
-                category.save()
+                category = Category.objects.filter(category=get_category).first()
 
-                listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
-                listing.save()
-            
+
+                # add that category and others into Listing db
+                if category:
+                    # Add all datas into listing database and save the data
+                    listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
+                    listing.save()
+
+                # create new category and add others into 
+                else:
+                    category = Category(category=get_category)
+                    category.save()
+
+                    listing = Listing(user=user, title=title, description=description, price=price, category=category, image=image)
+                    listing.save()
+                
             # Redirect the user into active listing page
-            messages.success(request, "Your Listing is added Successfully!")
+            messages.success(request, "Your List is added Successfully!")
             return HttpResponseRedirect(reverse("index"))
 
         # Return inserted form to the user
@@ -236,7 +244,7 @@ def comment(request, list_id):
         user = request.user
 
         # get the listing object
-        lists = Listing.objects.get(pk=list_id)
+        lists = Listing.objects.filter(pk=list_id).first()
 
         # Check if list exist
         if not lists:
@@ -282,20 +290,26 @@ def bid(request, list_id):
         user = request.user
 
         # get the amount of bid
-        lists = Listing.objects.get(pk=list_id)
+        lists = Listing.objects.filter(pk=list_id).first()
 
         # Error: list is not found
         if not lists:
             messages.error(request, "Page Not Found!")
             return HttpResponseRedirect(reverse("index"))
-            
+        
+        # Check if the owner of the page isn't bidding on it
+        if lists.user.id == user.id:
+            message.error(request, "Bidding on your own item is not allowed!")
+            return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
+        
         # check for the validity
         if form.is_valid():
+
 
             # compare it with the highest bid using get_bid() function 
             new_bid = form.cleaned_data['price']
 
-            max_bid, length = get_bid(lists)
+            max_bid, bidder, length = get_bid(lists)
 
             # Error bid must be greater than max_bid
             if max_bid > new_bid:
@@ -329,7 +343,7 @@ def closebid(request, list_id):
         user = request.user
 
         # get the item form db
-        lists = Listing.objects.get(pk=list_id)
+        lists = Listing.objects.filter(pk=list_id).first()
 
         # get it from the database 
         if not lists:
@@ -360,7 +374,7 @@ def closebid(request, list_id):
         winner.save()
         # winner.listing.add(lists)
 
-        messages.success(request, f"User: {user} won this auction. The Page is closed successfully.")
+        messages.success(request, f"The Page is closed successfully. {user} won this auction.")
         return HttpResponseRedirect(reverse("index"))
        
     else:
@@ -387,8 +401,11 @@ def see_watchlist(request):
         # user
         user = request.user
 
-        watchlist = WatchList.objects.get(user=user)
+        watchlist = WatchList.objects.filter(user=user).first()
 
+        if not watchlist:
+            messages.error(request, "No watchlists have been added yet; please add one!")
+            return HttpResponseRedirect(reverse("index"))
         # get all deactivated lists from the user watchlist
         deactivated_lists = watchlist.listing.filter(active=False)
 
@@ -415,7 +432,7 @@ def watchlist(request, list_id):
         user = request.user
 
         # Get the list 
-        lists = Listing.objects.get(pk=list_id, active=True)
+        lists = Listing.objects.filter(pk=list_id, active=True).first()
 
         # Check if the list exist
         if not lists:

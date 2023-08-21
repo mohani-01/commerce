@@ -34,6 +34,8 @@
                     <div class="category border border-info">
                     Category: {{ list.category }}
                     </div>
+                    {% else %}
+                    <div></div>
                     {% endif %}
                     <div class="price border border-info">
                         Price: ${{ list.price }}
@@ -42,10 +44,13 @@
 
             </div>
         </a>
+        {% empty %}
+        {% if watchlist %}
+        <h4>No Watchlist.</h4>
+        {% else %}
+        <h4>We are out of items.</h4>
+        {% endif %}
         {% endfor %}
     </div>
-    
-  
-
 
 {% endblock %}

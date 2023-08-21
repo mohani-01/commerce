@@ -3,36 +3,36 @@
 
 
 {% block body %}
-<div class="">
-
+<div class="container">
+    <h3>Add a New List</h3>
     <form action="{% url 'newlist'  %}" method="post">
        {% csrf_token %}
       
       <div class="mb-3 row">
-       <label for="newListTitle" class="col-sm-1 col-form-label">Title:</label>
-       <div class="col-sm-6">
+       <label for="newListTitle" class="col-sm-2 col-form-label">Title:</label>
+       <div class="col-sm-10">
          {{form.title}}
        </div>
      </div>
 
     <div class="mb-3 row">
-        <label for="newListDescription" class="col-sm-1 col-form-label">Description</label>
-        <div class="col-sm-6">
+        <label for="newListDescription" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
             {{form.description  }}
         </div>
     </div>
     
     <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-1 col-form-label">Price</label>
-        <div class="col-sm-6">
+        <label for="inputPassword" class="col-sm-2 col-form-label">Price</label>
+        <div class="col-sm-10">
             {{form.price }}
         </div>
     </div>
         
     <div class="mb-3 row">
-        <label for="newListCategory" class="col-sm-1 col-form-label">Category</label>
-        <div class="col-sm-6">
-            <input autocomplete="off" id="newListCategory" type="text" list="add"  class="form-control" name="category" />
+        <label for="newListCategory" class="col-sm-2 col-form-label">Category</label>
+        <div class="col-sm-10">
+            <input autocomplete="off" id="newListCategory" type="text" list="add" placeholder="Select or add a Category" class="form-control" name="category"  value=""/>
             <datalist id="add">
                 {% for category in categories %}
                 <option>{{ category }}</option>
@@ -42,16 +42,16 @@
     </div>
 
     <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-1 col-form-label">Image</label>
-        <div class="col-sm-6">
+        <label for="inputPassword" class="col-sm-2 col-form-label">Image</label>
+        <div class="col-sm-10">
             {{ form.image }}
         </div>  
  
     </div>
 
     <div class="mb-3 row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-6">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
             <input style="position: absolute; right: 14px" class="btn btn-outline-success" type="submit" value="Submit">
         </div>
     </div>
