@@ -2,7 +2,6 @@ body {
     background: rgb(242, 242, 242);
 }
 
-
 .hyper-link {
    color: black;
    text-decoration: none; 
@@ -19,27 +18,24 @@ body {
     flex-wrap: wrap;
     flex-direction: row;
     align-items: stretch;
-    
-    
 }
 
 .flex-items {
-
     display: flex;
     flex-wrap: nowrap;
     height: 400px;
     margin: 10px;
-    /* width: fit-  content; */
     background-color: rgb(227, 227, 227);
     border: 2px solid white;
     border-radius: 10px;
 }
+
 .flex-items:hover {
     border-color:  black;
     background-color: rgb(199, 199, 199);
     border-radius: 0px;
-    
 }
+
 .image-item {
     display: flex;
     align-items: center;
@@ -47,7 +43,6 @@ body {
     padding: 20px;
     width: 350px;
     overflow: hidden;
-    
 }
 
 .image-item > img {
@@ -69,17 +64,13 @@ body {
 .list-descriptions {
     display: grid;
     grid-template-rows: max-content auto max-content max-content;
-
     width: 100%;
     height: 100%;
-
     width: 400px;
     margin-top: 10px;
 }
 
-
 .title {
-
     text-align: center;
     border: 1px solid white;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -92,10 +83,7 @@ body {
     border-top-right-radius: 20px;
 }
 
-
-
 .description {
-
     text-align: justify;
     margin: 0px 10px;
     margin-bottom: 20px;
@@ -114,21 +102,17 @@ body {
     background: transparent; 
 }
 
-
-
 .category {
     margin: 10px 0px 0px 10px;
     justify-self: flex-start;
     padding: 5px;
     width: 95%;
-
 }
 
 .title:hover, .description:hover, .category:hover, .price:hover {
     background-color: rgb(147, 147, 147);
     border-color: black;
-    color: rgb(0, 0, 0);
-    
+    color: rgb(0, 0, 0);  
 }
 
 .price {
@@ -138,13 +122,7 @@ body {
 
     padding: 5px;
     width: 95%;
-
-
-
 }
-
-
-
 
 
 /* lists.html */
@@ -154,7 +132,6 @@ body {
     width: 90%;
     min-width: fit-content;
     max-width: 1200px;
-
     margin: auto;
 }
 
@@ -162,14 +139,11 @@ body {
     display: flex;
     flex-wrap: nowrap;
     width: fit-content;
-
-
-
 }
+
 .list-items {
-    
     border: 3px solid green;
-    
+
     min-width: 450px;
     max-height: 650px; 
     display: inline-block;
@@ -182,6 +156,7 @@ body {
     justify-content: center;
     align-items: center;
 }
+
 .list-items > img {
     margin: 20px ;
     max-width: 450px;
@@ -211,20 +186,19 @@ body {
 
 .list-description {
     height: 100%;
-
     text-align: justify ;
     margin: 10px;
-
     overflow: scroll;
 }
+
 .list-bottom {
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
     justify-content: flex-end;   
-
     margin-bottom: 30px;
 } 
+
 .list-add-watchlist { 
     align-self: end;
     margin: 0 5px 5px 0;
@@ -239,8 +213,8 @@ body {
     display: flex;
     flex-wrap: nowrap;
     justify-self: flex-end;
-
 }
+
 .list-add-bid > input[id="bid"] {
     position: relative;
     top: 10px;
@@ -257,20 +231,19 @@ body {
     min-width: fit-content;
     max-width: 1000px;
 }
+
 .comment-top {
     margin: 10px 0;
-
 }
+
 .comment {
     display: flex;
     margin: 20px 10px;
-    
 }
 
 .icon {
     width: 40px;
     height: 40px;
-
     margin: 5px;
     
 }
@@ -281,14 +254,14 @@ body {
     align-self: center;
     margin: 3px;
     color: rgb(22, 15, 164);
-
 }
+
 .user {
     padding: 5px 0px 0px 10px;
 }
+
 .user > div {
     margin-top: 5px;
-
 }
 
 .submit-comment {
@@ -298,23 +271,18 @@ body {
 }
 
 
-
-
-
 /* category.html */
 /* -------------------------------------------------------- */
+
 .category-container {
     display: flex;
     flex-wrap: wrap;
-
 }
 
 .category-item {
     width: 300px;
     text-align: center;
     margin: 20px;
-    /* padding: 20px; */
-
 }
 
 .category-item > input[type="submit"] {

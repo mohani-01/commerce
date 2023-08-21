@@ -71,7 +71,7 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
-# Done
+
 def category(request):
     # Via POST
     if request.method == "POST":   
@@ -103,14 +103,9 @@ def category(request):
         not_included = []
         for category in categories:
             if  not category.group.filter(active=True).all():
-
                 not_included.append(category)
 
         new_categories = categories.exclude(category__in=not_included)
-
-        print(new_categories, "Filtered")
-        # categories = Category.objects.exclude(category="").all()
-        # print(categories)
 
         return render(request, 'auctions/category.html', {
             "categories": new_categories,
@@ -138,11 +133,8 @@ def lists(request, list_id):
     # Get all the comment with the newest comment at top
     comments = lists.comment.all().order_by('-time')
 
-    #get the price and amount of bid on that object
-    # else get the price of the item 
+    #get the price, the user who bid and amount of bid on that object
     price, bidder, length = get_bid(lists)
-    print("is this correct", price)
-    
 
     # This have to be modified (current price use helper function in helpers.py)
     return render(request, 'auctions/lists.html', {
@@ -157,15 +149,13 @@ def lists(request, list_id):
     })
 
 
-
-# Done
 @login_required(login_url="/login")
 def newlist(request):
     # Via POST
     if request.method == "POST":
+        # Get the form the user filled
         form = NewList(request.POST)
 
-        # Get the user
         user = request.user
 
         # Check if the form is valid
@@ -182,7 +172,7 @@ def newlist(request):
             if not get_category:
                 listing = Listing(user=user, title=title, description=description, price=price, image=image)
                 listing.save()
-                print("Executing it")
+
 
             # Get Category if it exist
             else:
@@ -231,7 +221,7 @@ def newlist(request):
             "categories": categories,
         })
 
-# Done
+
 @login_required(login_url="/login")
 def comment(request, list_id):
     # Via POST
@@ -275,10 +265,8 @@ def comment(request, list_id):
 
     # Via not POST
     else:
-        messages.error(request, "Method Not Allowed!")
-        return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
+        return HttpResponseNotAllowed(permitted_methods="POST")
 
-# Done
 @login_required(login_url="/login")
 def bid(request, list_id):
     if request.method == "POST":
@@ -305,7 +293,6 @@ def bid(request, list_id):
         # check for the validity
         if form.is_valid():
 
-
             # compare it with the highest bid using get_bid() function 
             new_bid = form.cleaned_data['price']
 
@@ -321,19 +308,18 @@ def bid(request, list_id):
             bid.save()
             bid.listing.add(lists)
 
+        # invalid form 
         else:
             messages.error(request, "Invalid input. Try again")
             return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
 
-        messages.success(request, "Your Bid added successfully and your can check if you win on <a href=\"/closedlistings\">Closed listings</a>  when the auction is closed or you can bid again.")
         # Redirect With correct message
+        messages.success(request, "Your Bid added successfully and your can check if you win on <a href=\"/closedlistings\">Closed listings</a>  when the auction is closed or you can bid again.")
         return HttpResponseRedirect(reverse('lists', args=(lists.id,)))
     
     # Via not POST
     else:
-        messages.error(request, "Method Not Allowed!")
-        return HttpResponseRedirect(reverse("lists", args=(lists.id,)))
-
+        return HttpResponseNotAllowed(permitted_methods="POST")
 
 
 @login_required(login_url="/login")  
@@ -358,15 +344,12 @@ def closebid(request, list_id):
         # Change the active field to False
         lists.active = False  
         lists.save()
-        print("This objects is ", lists.active)
-
 
         # Figure out what this is used for 
         lists, user, winningbid =  get_winner(lists)
 
         # Add the winner from the db and add it to BidWinner so that he can acess it
         if not lists:
-                print("NO Bider")
                 messages.error(request, "Nobody bid on this auction. The Page is closed.")
                 return HttpResponseRedirect(reverse("index"))
 
@@ -378,22 +361,23 @@ def closebid(request, list_id):
         return HttpResponseRedirect(reverse("index"))
        
     else:
-        return HttpResponse("This method is not allowed")
+        return HttpResponseNotAllowed(permitted_methods="POST")
+
 
 @login_required(login_url="/login")
 def closedlistings(request):
+
     # get the user db
     user = request.user
 
     # get all listing where the user wins
     wins = BidWinner.objects.filter(user=user)  
     
-    print(wins)
     # then return that data as template
     return render(request, 'auctions/wins.html', {
         "wins": wins,
     })
-    ...
+
 
 # See you watchlist
 @login_required(login_url="/login")
@@ -428,7 +412,6 @@ def see_watchlist(request):
 @login_required(login_url="/login")
 def watchlist(request, list_id):
     if request.method == "POST":
-        # get the user id
         user = request.user
 
         # Get the list 
@@ -481,6 +464,5 @@ def watchlist(request, list_id):
 
     # Error
     else:
-        # return HttpResponseNotFound("<h1>404: Page not found</h1>")
         return HttpResponseNotAllowed(permitted_methods="POST")
     

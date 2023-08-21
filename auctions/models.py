@@ -11,12 +11,12 @@ import os
 class User(AbstractUser):
     pass
 
-
 class Category(models.Model):
     category = models.CharField(max_length=64, blank=True, default="")
 
     def __str__(self):
         return f"{self.category}"
+
 class Listing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="lister")
     title = models.CharField(max_length=64)
@@ -26,7 +26,6 @@ class Listing(models.Model):
     time = models.DateField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="group") 
     image = models.URLField(null=True, blank=True)
-
 
 def __str__(self):
     return f"{self.title}"
@@ -61,3 +60,6 @@ class BidWinner(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="winner")
     winningbid = models.DecimalField(max_digits=10, decimal_places=2)
     listing = models.OneToOneField(Listing, on_delete=models.CASCADE, blank=True, related_name="winner")
+
+def __str__(self):
+    return f"User: {self.user} bid on {self.listing} and won it by bidding {self.winningbid} on it."

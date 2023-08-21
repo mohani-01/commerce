@@ -9,7 +9,6 @@ class NewList(forms.Form):
     image = forms.URLField(label="Image Url", required=False, widget=forms.URLInput(attrs={"placeholder":"URL: https://www.example.com/photos/190819/", "class":"form-control", "autocomplete":"off"}))
 
 
-
 class NewBid(forms.Form):
     price = forms.DecimalField(label="", max_digits=10,  decimal_places=2, widget=forms.NumberInput(attrs={"placeholder":"Bid", "class":"bid-input form-control"})) 
 
