@@ -307,3 +307,17 @@ body {
 .category-item > input[type="submit"]:hover {
     background-color: aliceblue;
 }
+
+
+/* login.html and register.html */
+
+.login {
+    max-width: 500px;
+    box-sizing: border-box;
+    margin: 20px;
+    padding: 10px;
+}
+
+.login h2 {
+    padding: 10px 0;
+}
