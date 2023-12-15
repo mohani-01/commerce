@@ -1,6 +1,9 @@
 body {
     background: rgb(242, 242, 242);
+    overflow-x: hidden;
+    border: 2px solid green;
 }
+
 
 .hyper-link {
    color: black;
@@ -18,6 +21,7 @@ body {
     flex-wrap: wrap;
     flex-direction: row;
     align-items: stretch;
+    overflow-x: hidden;
 }
 
 .flex-items {
@@ -31,7 +35,7 @@ body {
 }
 
 .flex-items:hover {
-    border-color:  black;
+    border-color:  rgb(19, 17, 17);
     background-color: rgb(199, 199, 199);
     border-radius: 0px;
 }
@@ -124,6 +128,15 @@ body {
     width: 95%;
 }
 
+@media only screen and (max-width: 786px) {
+   .image-item {
+    width: 40vw;
+   }
+
+   .list-descriptions {
+        width: 50vw;
+   }
+}
 
 /* lists.html */
 /* ---------------------------------------------- */
@@ -137,7 +150,7 @@ body {
 
 .list-container {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     width: fit-content;
 }
 
